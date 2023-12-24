@@ -1,6 +1,7 @@
 #include "config.h"
 #include "window.h"
 #include "gfx/gfx.h"
+#include "io/txt.h"
 
 #include <stdio.h>
 
@@ -44,4 +45,7 @@ int main()
 static void display_splash_text()
 {
 	printf("%s v%s - Compiled on %s UTC.\n", PROJECT_NAME, ZBM_VERSION, TIMESTAMP_UTC);
+	
+	char* splash = io_load_txt("res/splash.txt");
+	printf("%s\n", splash);
 }
