@@ -1,9 +1,22 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "core/window.h"
+
 #define PROJECT_NAME "@CMAKE_PROJECT_NAME@"
 #define ZBM_VERSION_MAJOR @Zombimania_VERSION_MAJOR@
 #define ZBM_VERSION_MINOR @Zombimania_VERSION_MINOR@
+#define ZBM_VERSION "@Zombimania_VERSION_MAJOR@.@Zombimania_VERSION_MINOR@"
 #define TIMESTAMP_UTC "@TIMESTAMP_UTC@"
+
+const WindowSettings WINDOW_SETTINGS = {
+	.width = 324,
+	.height = 200,
+	.title = PROJECT_NAME " v" ZBM_VERSION,
+	.viewport = {
+		.width = 324,
+		.height = 200
+	}
+};
 
 #endif
