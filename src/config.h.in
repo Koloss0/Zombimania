@@ -1,0 +1,9 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define PROJECT_NAME "@CMAKE_PROJECT_NAME@"
+#define ZBM_VERSION_MAJOR @Zombimania_VERSION_MAJOR@
+#define ZBM_VERSION_MINOR @Zombimania_VERSION_MINOR@
+#define TIMESTAMP_UTC "@TIMESTAMP_UTC@"
+
+#endif
