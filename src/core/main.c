@@ -34,6 +34,15 @@ int main()
 		delta = time - last_frame_time;
 		last_frame_time = time;
 
+		gfx_begin(&CAMERA_DEFAULT);
+
+		gfx_background(0.0f, 0.0f, 0.0f);
+
+		// no textures yet.
+		gfx_sprite2d(0.0f, 0.0f, 0.5f, 0.5f, (TextureRect){0,0,1,1});
+
+		gfx_end();
+
 		window_update(window);
 	}
 	

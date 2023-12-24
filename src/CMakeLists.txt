@@ -12,5 +12,6 @@ add_executable(zombimania)
 add_subdirectory(core)
 add_subdirectory(gfx)
 add_subdirectory(io)
+add_subdirectory(math)
 
 target_include_directories(zombimania PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
