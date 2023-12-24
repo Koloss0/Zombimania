@@ -15,3 +15,4 @@ add_subdirectory(io)
 add_subdirectory(math)
 
 target_include_directories(zombimania PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+target_compile_options(zombimania PRIVATE "$<$<COMPILE_LANGUAGE:C>:${c_flags}>")

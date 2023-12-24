@@ -29,7 +29,7 @@ char* io_load_txt(const char* path)
 	rewind(fp);
 
 	char* buf = malloc((size_t)size + 1);
-	int bytes = fread(buf, 1, (size_t)size, fp);
+	size_t bytes = fread(buf, 1, (size_t)size, fp);
 	
 	if (bytes != (size_t)size)
 	{

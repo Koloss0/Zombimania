@@ -61,6 +61,8 @@ bool sprite2d_init()
 
 	//shader_set_sampler2d("textureImage", GL_TEXTURE0);
 	shader_set_mat3(state.shader, "mvp", &MAT3_IDENTITY);
+
+	return true;
 }
 
 void sprite2d_shutdown()
