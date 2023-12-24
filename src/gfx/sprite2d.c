@@ -17,51 +17,63 @@ typedef struct
 	float u, v;
 } Vertex;
 
+typedef struct
+{
+	float x, y, width, height;
+} Sprite2D;
+
+static struct
+{
+	Sprite2D sprites[SPRITES_MAX];
+	size_t sprites_size;
+
+	GLuint vao, quad_vbo, sprites_vbo;
+	Shader* shader;
+} state;
+
 static GLuint create_quad_vbo();
 static GLuint create_sprites_vbo();
 
-bool sprite2d_init(Sprite2DState* s)
+bool sprite2d_init()
 {
-	s->sprites_size = 0;
+	state.sprites_size = 0;
 
 	// create vao
-	GL_CMD(glGenVertexArrays(1, &s->vao));
-	GL_CMD(glBindVertexArray(s->vao));
+	GL_CMD(glGenVertexArrays(1, &state.vao));
+	GL_CMD(glBindVertexArray(state.vao));
 
 	// create quad vbo
-	s->quad_vbo = create_quad_vbo();
+	state.quad_vbo = create_quad_vbo();
 
 	// create sprites vbo
-	s->sprites_vbo = create_sprites_vbo();
+	state.sprites_vbo = create_sprites_vbo();
 	
 	GL_CMD(glBindVertexArray(0));
 
-	s->shader = shader_create("res/shaders/sprite2d.shader");
-	if (!s->shader)
+	state.shader = shader_create("res/shaders/sprite2d.shader");
+	if (!state.shader)
 	{
 		LOG_ERROR("failed to initialise Sprite2D: could not create shader.");
 		return false;
 	}
 
-	shader_use(s->shader);
+	shader_use(state.shader);
 
 	//shader_set_sampler2d("textureImage", GL_TEXTURE0);
-	shader_set_mat3(s->shader, "mvp", &MAT3_IDENTITY);
-
-	return s;
+	shader_set_mat3(state.shader, "mvp", &MAT3_IDENTITY);
 }
 
-void sprite2d_shutdown(Sprite2DState* s)
+void sprite2d_shutdown()
 {
-	GL_CMD(glDeleteBuffers(1, &s->quad_vbo));
-	GL_CMD(glDeleteVertexArrays(1, &s->vao));
+	GL_CMD(glDeleteBuffers(1, &state.quad_vbo));
+	GL_CMD(glDeleteVertexArrays(1, &state.vao));
 
-	shader_destroy(s->shader);
+	shader_destroy(state.shader);
 }
 
-void sprite2d_draw(Sprite2DState* s, float x, float y, float width, float height, TextureRect texture_rect)
+void sprite2d_draw(float x, float y, float width, float height, TextureRect texture_rect)
 {
-	if (s->sprites_size < SPRITES_MAX)
+	if (state.sprites_size < SPRITES_MAX)
 	{
 		Sprite2D sprite = {
 			.x = x,
@@ -70,8 +82,8 @@ void sprite2d_draw(Sprite2DState* s, float x, float y, float width, float height
 			.height = height
 		};
 
-		s->sprites[s->sprites_size] = sprite;
-		s->sprites_size++;
+		state.sprites[state.sprites_size] = sprite;
+		state.sprites_size++;
 	}
 	else
 	{
@@ -79,33 +91,33 @@ void sprite2d_draw(Sprite2DState* s, float x, float y, float width, float height
 	}
 }
 
-void sprite2d_begin(Sprite2DState* s)
+void sprite2d_begin()
 {
 }
 
-void sprite2d_end(Sprite2DState* s)
+void sprite2d_end()
 {
-	sprite2d_flush(s);
+	sprite2d_flush();
 }
 
-void sprite2d_flush(Sprite2DState* s)
+void sprite2d_flush()
 {
-	GL_CMD(glBindVertexArray(s->vao));
+	GL_CMD(glBindVertexArray(state.vao));
 
 	// TODO: bind texture here
 	
-	shader_use(s->shader);
+	shader_use(state.shader);
 
 	// update sprite buffer
-	glBindBuffer(GL_ARRAY_BUFFER, s->sprites_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, state.sprites_vbo);
 	glBufferData(GL_ARRAY_BUFFER, SPRITES_MAX * sizeof(Sprite2D), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)(s->sprites_size * sizeof(Sprite2D)), s->sprites);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)(state.sprites_size * sizeof(Sprite2D)), state.sprites);
 
 	// instanced draw call
-	GL_CMD(glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, (GLsizei)s->sprites_size));
+	GL_CMD(glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, (GLsizei)state.sprites_size));
 
 	// clear sprite array
-	s->sprites_size = 0;
+	state.sprites_size = 0;
 }
 
 static GLuint create_quad_vbo()

@@ -12,16 +12,12 @@ typedef struct
 
 typedef struct
 {
-	GLFWwindow* glfw_window;
-	Viewport viewport;
-} Window;
-
-typedef struct
-{
 	Viewport viewport;
 	unsigned int width, height;
 	const char* title;
 } WindowSettings;
+
+typedef struct Window Window;
 
 Window* window_create(const WindowSettings* window_settings);
 void window_destroy(Window* window);

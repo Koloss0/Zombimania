@@ -5,6 +5,12 @@
 
 #include <stdlib.h>
 
+struct Window
+{
+	GLFWwindow* glfw_window;
+	Viewport viewport;
+};
+
 static unsigned int num_windows = 0;
 
 static GLFWwindow* create_glfw_window(unsigned int width, unsigned int height, const char* title);
