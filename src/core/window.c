@@ -8,7 +8,6 @@
 struct Window
 {
 	GLFWwindow* glfw_window;
-	Viewport viewport;
 };
 
 static unsigned int num_windows = 0;
@@ -79,7 +78,7 @@ Window* window_create(const WindowSettings* window_settings)
 	glfwSetKeyCallback(glfw_win, key_callback);
 	glfwSetCursorPosCallback(glfw_win, cursor_position_callback);
 
-	resize_callback(glfw_win, (int)window_settings->viewport.width, (int)window_settings->viewport.height);
+	resize_callback(glfw_win, (int)window_settings->width, (int)window_settings->height);
 
 	num_windows++;
 
@@ -151,6 +150,7 @@ static void resize_callback(GLFWwindow* window, int width, int height)
 {
 	//Window* user_win = (Window*)glfwGetWindowUserPointer(window);
 
+	// TODO: GFX should handle this
 	glViewport(0, 0, width, height);
 }
 

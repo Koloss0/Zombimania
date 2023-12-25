@@ -34,7 +34,6 @@ extern const Mat3 MAT3_IDENTITY;
 extern const Mat4 MAT4_ZERO;
 extern const Mat4 MAT4_IDENTITY;
 
-Mat3 mat3_mult(Mat3 m1, Mat3 m2);
-Mat4 mat4_mult(Mat4 m1, Mat4 m2);
+Mat4 mat4_ortho(float left, float bottom, float right, float top);
 
 #endif

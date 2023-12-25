@@ -16,7 +16,7 @@ int main()
 		return -1;
 	}
 
-	if (!gfx_init())
+	if (!gfx_init(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
 	{
 		window_destroy(window);
 		return -1;
@@ -38,8 +38,9 @@ int main()
 
 		gfx_background(0.0f, 0.0f, 0.0f);
 
-		// no textures yet.
-		gfx_sprite2d(0.0f, 0.0f, 0.5f, 0.5f, (TextureRect){0,0,1,1});
+		gfx_sprite2d(30.0f, 55.0f, 25.0f, 25.0f, (TextureRect){51, 51, 95, 95});
+		gfx_sprite2d(50.0f, 50.0f, 25.0f, 25.0f, (TextureRect){332, 51, 95, 95});
+		gfx_sprite2d(70.0f, 45.0f, 25.0f, 25.0f, (TextureRect){508, 51, 95, 95});
 
 		gfx_end();
 

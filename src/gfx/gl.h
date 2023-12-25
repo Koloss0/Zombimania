@@ -9,6 +9,6 @@ GLenum gl_verify_error_(const char* file, int line);
 
 #define GL_VERIFY_ERROR() gl_verify_error_(__FILE__, __LINE__)
 
-#define GL_CMD(X) X; GL_VERIFY_ERROR()
+#define GL_CMD(X) do { X; GL_VERIFY_ERROR(); } while(0)
 
 #endif

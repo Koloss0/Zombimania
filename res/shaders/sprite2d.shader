@@ -3,19 +3,20 @@
 #version 330 core
 
 layout (location = 0) in vec2 aPos;
-layout (location = 1) in vec2 aTexcoord;
+layout (location = 1) in vec2 aUV;
 layout (location = 2) in vec2 aOffset;
 layout (location = 3) in vec2 aSize;
+layout (location = 4) in vec2 aUVOffset;
+layout (location = 5) in vec2 aUVScale;
 
 out vec2 uv;
 
-uniform mat3 mvp;
+uniform mat4 mvp;
 
 void main()
 {
-	vec2 pos = (mvp * vec3(aPos*aSize + aOffset, 1.0f)).xy;
-	gl_Position = vec4(pos, 0.0f, 1.0f);
-	uv = aTexcoord;
+	gl_Position = mvp * vec4(aPos*aSize + aOffset, 0.0f, 1.0f);
+	uv = aUV*aUVScale + aUVOffset;
 }
 
 // ───────────── Fragment Shader ─────────────
@@ -26,7 +27,10 @@ in vec2 uv;
 
 out vec4 color;
 
+uniform sampler2D textureImage;
+
 void main()
 {
-	color = vec4(uv.x, uv.y, 0.5f, 1.0f);
+	vec3 c = texture(textureImage, uv).rgb;
+	color = vec4(c, 1.0f);
 }

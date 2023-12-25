@@ -8,12 +8,6 @@
 typedef struct
 {
 	unsigned int width, height;
-} Viewport;
-
-typedef struct
-{
-	Viewport viewport;
-	unsigned int width, height;
 	const char* title;
 } WindowSettings;
 

@@ -1,4 +1,8 @@
 #include "matrix.h"
+#include "math.h"
+
+#include <math.h>
+#include <stdlib.h>
 
 const Mat3 MAT3_ZERO = {
 	.entries = {
@@ -34,59 +38,28 @@ const Mat4 MAT4_IDENTITY = {
 	}
 };
 
-/*
-static void multiplyMatrix(float* m1, size_t rows1, size_t cols1, float* m2, size_t rows1, size_t cols1)
+Mat4 mat4_ortho(float left, float bottom, float right, float top)
 {
-	float result[R1][C2];
+    const float DEG_TO_RAD = PI / 180.0f;
+	const float NEAR = -1.0f;
+	const float FAR =   1.0f;
 
-	for (int i = 0; i < R1; i++) {
-		for (int j = 0; j < C2; j++) {
-			result[i][j] = 0;
+    float x_scale =  2.0 / (right - left);
+    float y_scale =  2.0 / (top - bottom);
+	float z_scale = -2.0 / (FAR - NEAR);
 
-			for (int k = 0; k < R2; k++) {
-				result[i][j] += m1[i][k] * m2[k][j];
-			}
+	float x = -(right + left) / (right - left);
+	float y = -(top + bottom) / (top - bottom);
+	float z = -(FAR + NEAR)   / (FAR - NEAR);
+
+    Mat4 mat = {
+		.entries = {
+			x_scale, 0,       0,       0,
+			0,       y_scale, 0,       0,
+			0,       0,       z_scale, 0,
+			x,       y,       z,       1
 		}
-	}
-}
-*/
+    };
 
-Mat3 mat3_mult(Mat3 m1, Mat3 m2)
-{
-	Mat3 result;
-
-	for (int row = 0; row < 3; row++)
-	{
-		for (int col = 0; col < 3; col++)
-		{
-			int index = 3*row + col;
-
-			result.entries[index] = 0;
-
-			for (int i = 0; i < 3; i++)
-			{
-				result.entries[index] += m1.entries[3*row + i] * m2.entries[col + 3*i];
-			}
-		}
-	}
-
-	return result;
-}
-
-Mat4 mat4_mult(Mat4 m1, Mat4 m2)
-{
-	Mat4 result;
-	
-	for (int row = 0; row < 3; row++)
-	{
-		for (int col = 0; col < 3; col++)
-		{
-			int index = 3*row + col;
-
-			result.entries[index] = 0;
-
-		}
-	}
-
-	return result;
+	return mat;
 }

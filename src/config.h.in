@@ -10,13 +10,12 @@
 #define TIMESTAMP_UTC "@TIMESTAMP_UTC@"
 
 const WindowSettings WINDOW_SETTINGS = {
-	.width = 324,
-	.height = 200,
-	.title = PROJECT_NAME " v" ZBM_VERSION,
-	.viewport = {
-		.width = 324,
-		.height = 200
-	}
+	.width = 400,
+	.height = 400,
+	.title = PROJECT_NAME " v" ZBM_VERSION
 };
+
+const int VIEWPORT_WIDTH = 100;
+const int VIEWPORT_HEIGHT = 100;
 
 #endif

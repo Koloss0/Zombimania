@@ -14,11 +14,11 @@
 
 static bool init = false;
 
-bool gfx_init()
+bool gfx_init(int viewport_width, int viewport_height)
 {
 	ASSERT(!init, "attempt to initialise GFX twice");
 
-	if (!sprite2d_init())
+	if (!sprite2d_init(viewport_width, viewport_height))
 		return false;
 
 	init = true;

@@ -203,7 +203,8 @@ Shader* shader_create(const char* path)
 		return NULL;
 	}
 
-	GL_CMD(GLuint program = glCreateProgram());
+	GLuint program;
+	GL_CMD(program = glCreateProgram());
 	GL_CMD(glAttachShader(program, vs));
 	GL_CMD(glAttachShader(program, fs));
 	GL_CMD(glLinkProgram(program));
@@ -253,18 +254,21 @@ void shader_use(Shader* shader)
 
 void shader_set_sampler2d(Shader* shader, const char* name, GLint tex_unit)
 {
-	GL_CMD(GLint sampler_uniform = glGetUniformLocation(shader->id, name));
+	GLint sampler_uniform;
+	GL_CMD(sampler_uniform = glGetUniformLocation(shader->id, name));
 	GL_CMD(glUniform1i(sampler_uniform, tex_unit));
 }
 
 void shader_set_mat3(Shader* shader, const char* name, const Mat3* mat3)
 {
-	GL_CMD(GLint mat_uniform = glGetUniformLocation(shader->id, name));
+	GLint mat_uniform;
+	GL_CMD(mat_uniform = glGetUniformLocation(shader->id, name));
 	GL_CMD(glUniformMatrix3fv(mat_uniform, 1, GL_FALSE, mat3->entries));
 }
 
-void shader_set_mat4(Shader* shader, const char* name, const Mat3* mat4)
+void shader_set_mat4(Shader* shader, const char* name, const Mat4* mat4)
 {
-	GL_CMD(GLint mat_uniform = glGetUniformLocation(shader->id, name));
+	GLint mat_uniform;
+	GL_CMD(mat_uniform = glGetUniformLocation(shader->id, name));
 	GL_CMD(glUniformMatrix4fv(mat_uniform, 1, GL_FALSE, mat4->entries));
 }
