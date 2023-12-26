@@ -2,6 +2,7 @@
 #include "window.h"
 #include "gfx/gfx.h"
 #include "io/txt.h"
+#include "fsm.h"
 
 #include <stdio.h>
 
@@ -22,6 +23,13 @@ int main()
 		return -1;
 	}
 
+	if (!fsm_init(INITIAL_STATE))
+	{
+		gfx_shutdown();
+		window_destroy(window);
+		return -1;
+	}
+
 	display_splash_text();
 
 	// delta time variables
@@ -34,19 +42,11 @@ int main()
 		delta = time - last_frame_time;
 		last_frame_time = time;
 
-		gfx_begin(&CAMERA_DEFAULT);
-
-		gfx_background(0.0f, 0.0f, 0.0f);
-
-		gfx_sprite2d(30.0f, 55.0f, 25.0f, 25.0f, (TextureRect){51, 51, 95, 95});
-		gfx_sprite2d(50.0f, 50.0f, 25.0f, 25.0f, (TextureRect){332, 51, 95, 95});
-		gfx_sprite2d(70.0f, 45.0f, 25.0f, 25.0f, (TextureRect){508, 51, 95, 95});
-
-		gfx_end();
-
+		fsm_update(delta);
 		window_update(window);
 	}
 	
+	fsm_shutdown();
 	gfx_shutdown();
 	window_destroy(window);
 	return 0;

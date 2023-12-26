@@ -40,13 +40,12 @@ const Mat4 MAT4_IDENTITY = {
 
 Mat4 mat4_ortho(float left, float bottom, float right, float top)
 {
-    const float DEG_TO_RAD = PI / 180.0f;
 	const float NEAR = -1.0f;
 	const float FAR =   1.0f;
 
-    float x_scale =  2.0 / (right - left);
-    float y_scale =  2.0 / (top - bottom);
-	float z_scale = -2.0 / (FAR - NEAR);
+    float x_scale =  2.0f / (right - left);
+    float y_scale =  2.0f / (top - bottom);
+	float z_scale = -2.0f / (FAR - NEAR);
 
 	float x = -(right + left) / (right - left);
 	float y = -(top + bottom) / (top - bottom);

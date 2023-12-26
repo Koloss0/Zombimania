@@ -2,6 +2,7 @@
 #define CONFIG_H
 
 #include "core/window.h"
+#include "states/states.h"
 
 #define PROJECT_NAME "@CMAKE_PROJECT_NAME@"
 #define ZBM_VERSION_MAJOR @Zombimania_VERSION_MAJOR@
@@ -17,5 +18,7 @@ const WindowSettings WINDOW_SETTINGS = {
 
 const int VIEWPORT_WIDTH = 100;
 const int VIEWPORT_HEIGHT = 100;
+
+const GameStateID INITIAL_STATE = MAIN_MENU;
 
 #endif
