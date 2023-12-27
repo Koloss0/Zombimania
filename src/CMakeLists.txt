@@ -9,6 +9,8 @@ endif()
 
 add_executable(zombimania)
 
+target_sources(zombimania PRIVATE config.c)
+
 add_subdirectory(core)
 add_subdirectory(gfx)
 add_subdirectory(io)

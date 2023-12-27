@@ -34,7 +34,7 @@ Texture* texture_create()
 
 void texture_destroy(Texture* texture)
 {
-	ASSERT(texture, "Attempt to destroy null texture");
+	ASSERT(texture, "attempt to destroy null texture");
 
 	GL_CMD(glDeleteTextures(1, &texture->id));
 	free(texture);
@@ -73,10 +73,12 @@ void texture_bind(Texture* texture)
 
 unsigned long texture_get_width(const Texture* texture)
 {
+	ASSERT(texture, "attempt to get width of null texture.");
 	return texture->width;
 }
 
 unsigned long texture_get_height(const Texture* texture)
 {
+	ASSERT(texture, "attempt to get height of null texture.");
 	return texture->height;
 }

@@ -10,15 +10,11 @@
 #define ZBM_VERSION "@Zombimania_VERSION_MAJOR@.@Zombimania_VERSION_MINOR@"
 #define TIMESTAMP_UTC "@TIMESTAMP_UTC@"
 
-const WindowSettings WINDOW_SETTINGS = {
-	.width = 400,
-	.height = 400,
-	.title = PROJECT_NAME " v" ZBM_VERSION
-};
+extern const WindowSettings WINDOW_SETTINGS;
 
-const int VIEWPORT_WIDTH = 100;
-const int VIEWPORT_HEIGHT = 100;
+extern const int VIEWPORT_WIDTH;
+extern const int VIEWPORT_HEIGHT;
 
-const GameStateID INITIAL_STATE = MAIN_MENU;
+extern const GameStateID INITIAL_STATE;
 
 #endif
