@@ -242,20 +242,30 @@ static int read_pixel_array(uint8_t** data, FILE* f, uint32_t offset, long width
 		return -1;
 	}
 
+	// absolute dimensions.
 	unsigned long w = (unsigned long)(width < 0 ? -width : width);
 	unsigned long h = (unsigned long)(height < 0 ? -height : height);
 
 	vflip = height < 0 ? !vflip : vflip;
 
 	unsigned long row_size = ((unsigned long)bpp * w + 31) / 32 * 4;
-	
-	uint8_t buf[row_size * h];
+
+	// buffer for pixel array.
+	size_t buf_size = sizeof(uint8_t) * row_size * h;
+	uint8_t* buf = malloc(buf_size);
+
+	if (buf == NULL)
+	{
+		LOG_ERROR("Failed to load BMP: out of memory.");
+		return -1;
+	}
 
 	fseek(f, (long int)offset, SEEK_SET);
 
-	if (fread(buf, 1, sizeof(buf), f) != sizeof(buf))
+	if (fread(buf, 1, buf_size, f) != buf_size)
 	{
 		LOG_ERROR("Failed to load BMP: failed to read pixel array.");
+		free(buf);
 		return -1;
 	}
 
@@ -263,7 +273,8 @@ static int read_pixel_array(uint8_t** data, FILE* f, uint32_t offset, long width
 
 	if (pixel_arr == NULL)
 	{
-		LOG_ERROR("Failed to load BMP: cannot allocate heap memory.");
+		LOG_ERROR("Failed to load BMP: out of memory.");
+		free(buf);
 		return -1;
 	}
 
@@ -283,6 +294,8 @@ static int read_pixel_array(uint8_t** data, FILE* f, uint32_t offset, long width
 	}
 
 	*data = pixel_arr;
+
+	free(buf);
 
 	return 0;
 }
