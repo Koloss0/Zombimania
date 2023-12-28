@@ -13,6 +13,8 @@ typedef struct
 	unsigned long height;
 } Image;
 
-void img_print();
+void image_destroy(Image image);
+
+void image_print();
 
 #endif

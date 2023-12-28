@@ -27,7 +27,7 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 
 	if (!fp)
 	{
-		perror("Cannot read shader file");
+		perror("cannot read shader file");
 		return ERROR;
 	}
 
@@ -36,7 +36,7 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 
 	if (!vert_buf || !frag_buf)
 	{
-		LOG_ERROR("out of memory");
+		LOG_ERROR("out of memory.");
 
 		if (vert_buf)
 			free(vert_buf);
@@ -85,7 +85,7 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 
 					if (!new_buf)
 					{
-						LOG_ERROR("out of memory");
+						LOG_ERROR("out of memory.");
 
 						free(vert_buf);
 						free(frag_buf);
@@ -102,7 +102,7 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 					
 					if (!new_buf)
 					{
-						LOG_ERROR("out of memory");
+						LOG_ERROR("out of memory.");
 
 						free(vert_buf);
 						free(frag_buf);
@@ -121,7 +121,7 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 
 	if (!has_vert)
 	{
-		LOG_ERROR("missing vertex shader in '%s'", path);
+		LOG_ERROR("missing vertex shader in '%s'.", path);
 
 		free(vert_buf);
 		free(frag_buf);
@@ -130,7 +130,7 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 	
 	if (!has_frag)
 	{
-		LOG_ERROR("missing fragment shader in '%s'", path);
+		LOG_ERROR("missing fragment shader in '%s'.", path);
 
 		free(vert_buf);
 		free(frag_buf);
@@ -143,8 +143,9 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 	return OK;
 }
 
-Shader* shader_create(const char* path)
+Shader shader_create(const char* path)
 {
+	Shader shader = { .id = 0 };
 	GLuint vs, fs;
 
 	GLint success;
@@ -163,7 +164,7 @@ Shader* shader_create(const char* path)
 		if (fs_source)
 			free(fs_source);
 
-		return NULL;
+		return shader;
 	}
 
 	GL_CMD(vs = glCreateShader(GL_VERTEX_SHADER));
@@ -181,7 +182,7 @@ Shader* shader_create(const char* path)
 		free(vs_source);
 		free(fs_source);
 
-		return NULL;
+		return shader;
 	}
 	
 	GL_CMD(fs = glCreateShader(GL_FRAGMENT_SHADER));
@@ -200,7 +201,7 @@ Shader* shader_create(const char* path)
 		free(vs_source);
 		free(fs_source);
 
-		return NULL;
+		return shader;
 	}
 
 	GLuint program;
@@ -221,54 +222,41 @@ Shader* shader_create(const char* path)
 		free(vs_source);
 		free(fs_source);
 
-		return NULL;
-	}
-	
-	Shader* shader = malloc(sizeof(Shader));
-
-	if (shader == NULL)
-	{
-		LOG_ERROR("out of memory");
-
-		free(vs_source);
-		free(fs_source);
-
-		return NULL;
+		return shader;
 	}
 
-	shader->id = program;
+	shader.id = program;
 
 	return shader;
 }
 
-void shader_destroy(Shader* shader)
+void shader_destroy(const Shader shader)
 {
-	GL_CMD(glDeleteProgram(shader->id));
-	free(shader);
+	GL_CMD(glDeleteProgram(shader.id));
 }
 
-void shader_use(Shader* shader)
+void shader_use(const Shader shader)
 {
-	GL_CMD(glUseProgram(shader->id));
+	GL_CMD(glUseProgram(shader.id));
 }
 
-void shader_set_sampler2d(Shader* shader, const char* name, GLint tex_unit)
+void shader_set_int(const Shader shader, const char* name, GLint value)
 {
-	GLint sampler_uniform;
-	GL_CMD(sampler_uniform = glGetUniformLocation(shader->id, name));
-	GL_CMD(glUniform1i(sampler_uniform, tex_unit));
+	GLint int_uniform;
+	GL_CMD(int_uniform = glGetUniformLocation(shader.id, name));
+	GL_CMD(glUniform1i(int_uniform, value));
 }
 
-void shader_set_mat3(Shader* shader, const char* name, const Mat3* mat3)
+void shader_set_mat3(const Shader shader, const char* name, const Mat3* mat3)
 {
 	GLint mat_uniform;
-	GL_CMD(mat_uniform = glGetUniformLocation(shader->id, name));
+	GL_CMD(mat_uniform = glGetUniformLocation(shader.id, name));
 	GL_CMD(glUniformMatrix3fv(mat_uniform, 1, GL_FALSE, mat3->entries));
 }
 
-void shader_set_mat4(Shader* shader, const char* name, const Mat4* mat4)
+void shader_set_mat4(const Shader shader, const char* name, const Mat4* mat4)
 {
 	GLint mat_uniform;
-	GL_CMD(mat_uniform = glGetUniformLocation(shader->id, name));
+	GL_CMD(mat_uniform = glGetUniformLocation(shader.id, name));
 	GL_CMD(glUniformMatrix4fv(mat_uniform, 1, GL_FALSE, mat4->entries));
 }

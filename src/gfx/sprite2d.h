@@ -7,7 +7,7 @@
 
 #define SPRITES_MAX 2000
 
-bool sprite2d_init(int viewport_width, int viewport_height);
+bool sprite2d_init(unsigned long viewport_width, unsigned long viewport_height);
 void sprite2d_shutdown();
 
 void sprite2d_begin();

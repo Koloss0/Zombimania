@@ -1,5 +1,6 @@
 #include "window.h"
 
+#include "gfx/gfx.h"
 #include "gfx/gl.h"
 #include "core/log.h"
 
@@ -78,7 +79,8 @@ Window* window_create(const WindowSettings* window_settings)
 	glfwSetKeyCallback(glfw_win, key_callback);
 	glfwSetCursorPosCallback(glfw_win, cursor_position_callback);
 
-	resize_callback(glfw_win, (int)window_settings->width, (int)window_settings->height);
+	// FIXME: this causes gfx_fit_viewport to be called before gfx_init is called.
+	//resize_callback(glfw_win, (int)window_settings->width, (int)window_settings->height);
 
 	num_windows++;
 
@@ -149,9 +151,8 @@ static void on_glfw_error(int error, const char* desc)
 static void resize_callback(GLFWwindow* window, int width, int height)
 {
 	//Window* user_win = (Window*)glfwGetWindowUserPointer(window);
-
-	// TODO: GFX should handle this
-	glViewport(0, 0, width, height);
+	// TODO: use callback instead.
+	gfx_fit_viewport(width, height);
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

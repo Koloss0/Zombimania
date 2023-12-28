@@ -7,8 +7,10 @@
 
 #include <stdbool.h>
 
-bool gfx_init(int viewport_width, int viewport_height);
+bool gfx_init(unsigned long viewport_width, unsigned long viewport_height);
 void gfx_shutdown();
+
+void gfx_fit_viewport(int width, int height);
 
 void gfx_begin(const Camera* camera);
 void gfx_end();

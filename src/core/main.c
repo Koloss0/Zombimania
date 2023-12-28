@@ -23,6 +23,8 @@ int main()
 		return -1;
 	}
 
+	gfx_fit_viewport((int)WINDOW_SETTINGS.width, (int)WINDOW_SETTINGS.height);
+
 	if (!fsm_init(INITIAL_STATE))
 	{
 		gfx_shutdown();

@@ -13,41 +13,15 @@ const TexParameters DEFAULT_TEX_PARAMS = {
 	.filter_mag = GL_NEAREST
 };
 
-struct Texture
+Texture texture_create(Image image, const TexParameters* params)
 {
-	GLuint id;
-	unsigned long width;
-	unsigned long height;
-};
-
-Texture* texture_create()
-{
-	Texture* texture = malloc(sizeof(Texture));
-
-	if (texture)
-		GL_CMD(glGenTextures(1, &texture->id));
-	else
-		LOG_ERROR("failed to create texture: out of memory.");		
-	
-	return texture;
-}
-
-void texture_destroy(Texture* texture)
-{
-	ASSERT(texture, "attempt to destroy null texture");
-
-	GL_CMD(glDeleteTextures(1, &texture->id));
-	free(texture);
-}
-
-void texture_set_image(Texture* texture, Image image, const TexParameters* params)
-{
-	ASSERT(texture, "attempt to set image of null texture.");
-
 	if (!params)
 		params = &DEFAULT_TEX_PARAMS;
-
-	GL_CMD(glBindTexture(GL_TEXTURE_2D, texture->id));
+	
+	Texture texture;
+	
+	GL_CMD(glGenTextures(1, &texture.id));
+	GL_CMD(glBindTexture(GL_TEXTURE_2D, texture.id));
 
 	GL_CMD(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params->wrap_s));
 	GL_CMD(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, params->wrap_t));
@@ -60,25 +34,18 @@ void texture_set_image(Texture* texture, Image image, const TexParameters* param
 
 	GL_CMD(glBindTexture(GL_TEXTURE_2D, 0));
 
-	texture->width = image.width;
-	texture->height = image.height;
+	texture.width = image.width;
+	texture.height = image.height;	
+	
+	return texture;
 }
 
-void texture_bind(Texture* texture)
+void texture_destroy(Texture texture)
 {
-	ASSERT(texture, "attempt to bind null texture.");
-
-	GL_CMD(glBindTexture(GL_TEXTURE_2D, texture->id));
+	GL_CMD(glDeleteTextures(1, texture.id));
 }
 
-unsigned long texture_get_width(const Texture* texture)
+void texture_bind(Texture texture)
 {
-	ASSERT(texture, "attempt to get width of null texture.");
-	return texture->width;
-}
-
-unsigned long texture_get_height(const Texture* texture)
-{
-	ASSERT(texture, "attempt to get height of null texture.");
-	return texture->height;
+	GL_CMD(glBindTexture(GL_TEXTURE_2D, texture.id));
 }

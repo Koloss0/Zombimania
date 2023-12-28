@@ -12,15 +12,16 @@ typedef struct
 	GLint filter_min, filter_mag;
 } TexParameters;
 
-typedef struct Texture Texture;
+typedef struct
+{
+	GLuint id;
+	unsigned long width;
+	unsigned long height;
+} Texture;
 
-Texture* texture_create();
-void texture_destroy(Texture* texture);
+Texture texture_create(Image image, const TexParameters* params);
+void texture_destroy(Texture texture);
 
-void texture_set_image(Texture* texture, Image image, const TexParameters* params);
-void texture_bind(Texture* texture);
-
-unsigned long texture_get_width(const Texture* texture);
-unsigned long texture_get_height(const Texture* texture);
+void texture_bind(Texture texture);
 
 #endif

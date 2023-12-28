@@ -12,8 +12,8 @@
 
 extern const WindowSettings WINDOW_SETTINGS;
 
-extern const int VIEWPORT_WIDTH;
-extern const int VIEWPORT_HEIGHT;
+extern const unsigned long VIEWPORT_WIDTH;
+extern const unsigned long VIEWPORT_HEIGHT;
 
 extern const GameStateID INITIAL_STATE;
 

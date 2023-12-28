@@ -2,7 +2,12 @@
 
 #include <stdio.h>
 
-void img_print(Image img)
+void image_destroy(Image img)
+{
+	free(img.data);
+}
+
+void image_print(Image img)
 {
 	unsigned long w = img.width;
 	unsigned long h = img.height;
