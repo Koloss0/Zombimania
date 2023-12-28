@@ -1,1 +1,1 @@
-target_sources(zombimania PRIVATE matrix.c)
+target_sources(zombimania PRIVATE math.c matrix.c)

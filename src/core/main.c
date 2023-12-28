@@ -1,4 +1,5 @@
 #include "config.h"
+#include "math/math.h"
 #include "window.h"
 #include "gfx/gfx.h"
 #include "io/txt.h"
@@ -10,6 +11,11 @@ static void display_splash_text();
 
 int main()
 {
+	if (!math_init())
+	{
+		return -1;
+	}
+
 	Window* window = window_create(&WINDOW_SETTINGS);
 	
 	if (!window)
