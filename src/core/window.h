@@ -21,6 +21,8 @@ void window_destroy(Window* window);
 void window_update(Window* window);
 bool window_should_close(Window* window);
 
+void window_get_size(Window* window, int* width, int* height);
+
 bool window_is_key_pressed(const Window* window, int key);
 bool window_is_mouse_pressed(const Window* window, int button);
 void window_get_mouse_pos(const Window* window, double* x, double* y);

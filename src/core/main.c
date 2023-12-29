@@ -29,7 +29,11 @@ int main()
 		return -1;
 	}
 
-	gfx_fit_viewport((int)WINDOW_SETTINGS.width, (int)WINDOW_SETTINGS.height);
+	{
+		int w, h;
+		window_get_size(window, &w, &h);
+		gfx_fit_viewport(w, h);
+	}
 
 	if (!fsm_init(INITIAL_STATE))
 	{

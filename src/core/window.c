@@ -15,7 +15,7 @@ struct Window
 static unsigned int num_windows = 0;
 
 static GLFWwindow* create_glfw_window(
-		unsigned int width, unsigned int height,
+		int width, int height,
 		const char* title, GLFWmonitor* monitor);
 static void on_glfw_error(int error, const char* desc);
 static void resize_callback(GLFWwindow* window, int width, int height);
@@ -52,8 +52,8 @@ Window* window_create(const WindowSettings* window_settings)
 	}
 
 	GLFWwindow* glfw_win = create_glfw_window(
-			window_settings->width,
-			window_settings->height,
+			(int)window_settings->width,
+			(int)window_settings->height,
 			window_settings->title,
 			monitor
 			);
@@ -126,6 +126,11 @@ bool window_should_close(Window* window)
 	return glfwWindowShouldClose(window->glfw_window);
 }
 
+void window_get_size(Window* window, int* width, int* height)
+{
+	glfwGetWindowSize(window->glfw_window, width, height);
+}
+
 bool window_is_key_pressed(const Window* window, int key)
 {
 	return glfwGetKey(window->glfw_window, key) == GLFW_PRESS;
@@ -142,7 +147,7 @@ void window_get_mouse_pos(const Window* window, double* x, double* y)
 }
 
 static GLFWwindow* create_glfw_window(
-		unsigned int width, unsigned int height,
+		int width, int height,
 		const char* title, GLFWmonitor* monitor)
 {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -154,13 +159,23 @@ static GLFWwindow* create_glfw_window(
 
 	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GL_TRUE);
 
-	GLFWwindow* glfw_window = glfwCreateWindow(
-			(int)width, (int)height, title, monitor, NULL);
+	if (monitor)
+	{
+		// Fix content area size when playing in fullscreen.
+		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+		if (mode)
+		{
+			width = mode->width;
+			height = mode->height;
+		}
+	}
+
+	GLFWwindow* window = glfwCreateWindow(width, height, title, monitor, NULL);
 	
-	if (!glfw_window)
+	if (!window)
 		return NULL;
 
-	return glfw_window;
+	return window;
 }
 
 static void on_glfw_error(int error, const char* desc)
