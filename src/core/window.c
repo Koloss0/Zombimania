@@ -5,6 +5,7 @@
 #include "core/log.h"
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 struct Window
 {
@@ -13,7 +14,9 @@ struct Window
 
 static unsigned int num_windows = 0;
 
-static GLFWwindow* create_glfw_window(unsigned int width, unsigned int height, const char* title);
+static GLFWwindow* create_glfw_window(
+		unsigned int width, unsigned int height,
+		const char* title, GLFWmonitor* monitor);
 static void on_glfw_error(int error, const char* desc);
 static void resize_callback(GLFWwindow* window, int width, int height);
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -41,12 +44,19 @@ Window* window_create(const WindowSettings* window_settings)
 
 		glfwSetErrorCallback(on_glfw_error);
 	}
+	
+	GLFWmonitor* monitor = NULL;
+	if (window_settings->fullscreen)
+	{
+		monitor = glfwGetPrimaryMonitor();
+	}
 
 	GLFWwindow* glfw_win = create_glfw_window(
 			window_settings->width,
 			window_settings->height,
-			window_settings->title
-		);
+			window_settings->title,
+			monitor
+			);
 
 	if (!glfw_win)
 	{
@@ -81,6 +91,11 @@ Window* window_create(const WindowSettings* window_settings)
 
 	// FIXME: this causes gfx_fit_viewport to be called before gfx_init is called.
 	//resize_callback(glfw_win, (int)window_settings->width, (int)window_settings->height);
+
+	if (window_settings->vsync)
+	{
+		glfwSwapInterval(1);
+	}
 
 	num_windows++;
 
@@ -126,7 +141,9 @@ void window_get_mouse_pos(const Window* window, double* x, double* y)
 	glfwGetCursorPos(window->glfw_window, x, y);
 }
 
-static GLFWwindow* create_glfw_window(unsigned int width, unsigned int height, const char* title)
+static GLFWwindow* create_glfw_window(
+		unsigned int width, unsigned int height,
+		const char* title, GLFWmonitor* monitor)
 {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -135,7 +152,10 @@ static GLFWwindow* create_glfw_window(unsigned int width, unsigned int height, c
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-	GLFWwindow* glfw_window = glfwCreateWindow((int)width, (int)height, title, NULL, NULL);
+	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GL_TRUE);
+
+	GLFWwindow* glfw_window = glfwCreateWindow(
+			(int)width, (int)height, title, monitor, NULL);
 	
 	if (!glfw_window)
 		return NULL;

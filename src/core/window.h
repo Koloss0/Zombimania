@@ -9,6 +9,8 @@ typedef struct
 {
 	unsigned int width, height;
 	const char* title;
+	bool fullscreen;
+	bool vsync;
 } WindowSettings;
 
 typedef struct Window Window;
