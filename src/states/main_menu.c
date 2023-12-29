@@ -2,6 +2,7 @@
 #include "gfx/gfx.h"
 #include <stdbool.h>
 #include "config.h"
+#include <stdio.h>
 static const int NUM_BUTTONS=3;
 static const int LEFT_PAD=24;//offset in pixels on left 
 static const int VERT_SPACE=24;
@@ -22,7 +23,7 @@ static Button buttons[] = {
 	}, //play
 	{
 		.width=116, .height=16,
-		.textrect={.x=0,.y=17,.w=116,.h=16}
+		.textrect={.x=0,.y=17,.w=116,.h=15}
 	}, //settings
 	{
 		.width=56, .height=16, 
@@ -62,15 +63,15 @@ void mm_update(double delta)
 	gfx_background(0.11f, 0.11f, 0.11f);
 
 	gfx_sprite2d(160,190,0,0, (TextureRect){0,48,197,20});//zombimania
+	
 	for(int i=0; i<NUM_BUTTONS; i++)
 	{
 		gfx_sprite2d(buttons[i].x,buttons[i].y,buttons[i].width,buttons[i].height,buttons[i].textrect);
-
+		
 	}
-	//gfx_sprite2d(160,130,0,0, (TextureRect){0,32,58,16});//play
-	//gfx_sprite2d(160,110,0,0, (TextureRect){0,17,116,16});//settings
+
+	gfx_sprite2d(10,buttons[selected_button].y,0,0,(TextureRect){1,72,14,16});
 	
-	//gfx_sprite2d(VIEWPORT_WIDTH/2,VIEWPORT_HEIGHT/2, 0, 0, (TextureRect){0,0, 221, 200});
 	
 	
 	
@@ -82,7 +83,35 @@ void mm_update(double delta)
 
 // called when a key is either pressed, repeated (held down), or released.
 void mm_key_input(int key, int action, int scancode, int mods)
-{}
+{
+	//printf("pressing a button. \n");
+	printf("%d,%d \n",action,GLFW_PRESS);
+	if(action==GLFW_PRESS || action==GLFW_REPEAT)
+	{
+		
+		if(key==GLFW_KEY_UP)
+		{
+		selected_button--;
+		}
+
+		if(key==GLFW_KEY_DOWN)
+		{
+		selected_button++;
+		}
+
+	}
+
+	if(selected_button<0)
+	{
+		selected_button=0;
+	}
+
+	if(selected_button>=NUM_BUTTONS)
+	{
+		selected_button=NUM_BUTTONS-1;
+	}
+
+}
 
 // called when a mouse button is pressed or released.
 void mm_mouse_button_input(int button, bool pressed, int mods)
