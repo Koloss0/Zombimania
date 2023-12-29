@@ -3,6 +3,7 @@
 #include "gfx/gfx.h"
 #include "gfx/gl.h"
 #include "core/log.h"
+#include "fsm.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -192,10 +193,10 @@ static void resize_callback(GLFWwindow* window, int width, int height)
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-
+	// TODO: use callback instead.
+	fsm_key_input(key, scancode, action, mods);
 }
 
 static void cursor_position_callback(GLFWwindow* window, double x, double y)
 {
-
 }

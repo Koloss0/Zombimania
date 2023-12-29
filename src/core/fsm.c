@@ -84,3 +84,11 @@ void fsm_update(double delta)
 		}
 	}
 }
+
+void fsm_key_input(int key, int scancode, int action, int mods)
+{
+	if (current_state != NONE)
+	{
+		states[current_state].key_input(key, scancode, action, mods);
+	}
+}
