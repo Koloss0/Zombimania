@@ -84,18 +84,38 @@ void sprite2d_shutdown()
 	shader_destroy(state.shader);
 }
 
-void sprite2d_draw(float x, float y, float width, float height, TextureRect texture_rect)
-{
+void sprite2d_draw(int x, int y, int width, int height, TextureRect texture_rect)
+{	
+	if(width==0 && height==0)
+	{
+		width=texture_rect.w;
+		height=texture_rect.h;
+	}
+	 else if(width==0)
+	 {
+		
+		double prop = (double)texture_rect.w/(double)texture_rect.h;
+		width=height*(int)prop;
+
+	 }
+	else if(height==0)
+	{
+		double prop = (double)texture_rect.w/(double)texture_rect.h;
+		height=width/(int)prop;
+		
+	}
+	
+
 	if (state.sprites_size < SPRITES_MAX)
 	{
 		float tex_width = (float)state.texture_atlas.width;
 		float tex_height = (float)state.texture_atlas.height;
 
 		Sprite2D sprite = {
-			.x =          x,
-			.y =          y,
-			.width =      width,
-			.height =     height,
+			.x =          (float) x,
+			.y =          (float) y,
+			.width =      (float)width,
+			.height =     (float)height,
 			.uv_x =       (float)texture_rect.x / tex_width,
 			.uv_y =       (float)texture_rect.y / tex_height,
 			.uv_scale_x = (float)texture_rect.w / tex_width,

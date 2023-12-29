@@ -112,7 +112,7 @@ void gfx_background(float r, float g, float b)
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void gfx_sprite2d(float x, float y, float width, float height, TextureRect texture_rect)
+void gfx_sprite2d(int x, int y, int width, int height, TextureRect texture_rect)
 {
 	sprite2d_draw(x, y, width, height, texture_rect);
 }
