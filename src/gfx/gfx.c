@@ -18,30 +18,40 @@ static struct {
 	int x, y, w, h;
 } screen_bounds = {0,0,0,0};
 
-bool gfx_init(unsigned long viewport_width, unsigned long viewport_height)
+bool gfx_init(unsigned int viewport_width, unsigned int viewport_height)
 {
-	INIT_FUNC();
+	REQUIRE_UNINIT();
+	init_status = INITIALISED;
 
-	viewport = viewport_create(viewport_width, viewport_height);
+	viewport = viewport_create((unsigned)viewport_width, (unsigned)viewport_height);
 	if (!viewport)
 	{
 		LOG_ERROR("failed to initialise GFX: failed to create viewport.");
+		gfx_shutdown();
 		return false;
 	}
 
-	if (!sprite2d_init(viewport_width, viewport_height))
+	if (!sprite2d_init((unsigned)viewport_width, (unsigned)viewport_height))
+	{
+		LOG_ERROR("failed to initialise GFX: failed to initialise Sprite2D.");
+		gfx_shutdown();
 		return false;
+	}
 
 	return true;
 }
 
 void gfx_shutdown()
 {
-	sprite2d_shutdown();
+	if (init_status == INITIALISED)
+	{
+		sprite2d_shutdown();
 
-	viewport_destroy(viewport);
+		if (viewport)
+			viewport_destroy(viewport);
 
-	SHUTDOWN_FUNC();
+		init_status = UNINITIALISED;
+	}
 }
 
 void gfx_fit_viewport(int width, int height)

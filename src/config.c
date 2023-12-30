@@ -8,7 +8,7 @@ const WindowSettings WINDOW_SETTINGS = {
 	.vsync = false
 };
 
-const unsigned long VIEWPORT_WIDTH = 320;
-const unsigned long VIEWPORT_HEIGHT = 200;
+const int VIEWPORT_WIDTH = 320;
+const int VIEWPORT_HEIGHT = 200;
 
 const GameStateID INITIAL_STATE = MAIN_MENU;

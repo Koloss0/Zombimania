@@ -26,7 +26,8 @@ static GameStateID next_state;
 
 bool fsm_init(GameStateID initial_state)
 {
-	INIT_FUNC();
+	REQUIRE_UNINIT();
+	init_status = INITIALISED;
 
 	current_state = NONE;
 
@@ -45,13 +46,16 @@ bool fsm_init(GameStateID initial_state)
 
 void fsm_shutdown()
 {
-	fsm_change_state(NONE);
+	if (init_status == INITIALISED)
+	{
+		fsm_change_state(NONE);
 
-	// destroy the structs for all game states.
-	DESTROY_STATE(mm);
-	// ...
+		// destroy the structs for all game states.
+		DESTROY_STATE(mm);
+		// ...
 
-	SHUTDOWN_FUNC();
+		init_status = UNINITIALISED;
+	}
 }
 
 void fsm_queue_next_state(GameStateID state)
@@ -97,6 +101,8 @@ void fsm_update(double delta)
 
 void fsm_key_input(int key, int scancode, int action, int mods)
 {
+	REQUIRE_INIT();
+
 	if (current_state != NONE)
 	{
 		states[current_state].key_input(key, scancode, action, mods);

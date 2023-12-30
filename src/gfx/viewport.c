@@ -6,64 +6,75 @@
 
 static GLuint create_quad_vbo();
 
-Viewport* viewport_create(unsigned long width, unsigned long height)
+Viewport* viewport_create(unsigned int width, unsigned int height)
 {
-	Viewport* viewport = malloc(sizeof(Viewport));
+	Viewport* viewport = calloc(1, sizeof(Viewport));
 	if (!viewport)
 	{
 		LOG_ERROR("failed to create viewport: out of memory.");
 		return NULL;
 	}
 
-	Image image = {
-		.width  = width,
-		.height = height,
-		.data   = NULL,
-	};
+	viewport->width = width;
+	viewport->height = height;
 
-	Texture texture = texture_create(image, NULL);
-	ASSERT(texture.id > 0, "failed to create viewport: failed to create texture.");
+	// create texture.
+	Image img = {.data = NULL, .width = width, .height = height};
+	Texture texture = texture_create(img, NULL);
+	viewport->texture = texture;
 
+	// create framebuffer.
 	Framebuffer framebuffer = framebuffer_create(texture);
+	viewport->framebuffer = framebuffer;
 
 	// create vao.
 	GLuint quad_vao;
 	GL_CMD(glGenVertexArrays(1, &quad_vao));
+	viewport->quad_vao = quad_vao;
+
 	GL_CMD(glBindVertexArray(quad_vao));
 
+	// create quad vbo.
 	GLuint quad_vbo = create_quad_vbo();
+	viewport->quad_vbo = quad_vbo;
 
 	GL_CMD(glBindVertexArray(0));
 
+	// create shader.
 	Shader shader = shader_create("res/shaders/viewport.shader");
 	if (shader.id == 0)
 	{
 		LOG_ERROR("failed to create viewport: failed to create shader.");
-		// FIXME: delete quad vbo & vao
-		framebuffer_destroy(framebuffer);
-		texture_destroy(texture);
-		free(viewport);
+		viewport_destroy(viewport);
 		return NULL;
 	}
+	viewport->shader = shader;
 
 	shader_use(shader);
 	shader_set_int(shader, "screenTexture", 0);
-
-	viewport->width       = width;
-	viewport->height      = height;
-	viewport->framebuffer = framebuffer;
-	viewport->texture     = texture;
-	viewport->shader      = shader;
-	viewport->quad_vbo    = quad_vbo;
-	viewport->quad_vao    = quad_vao;
 
 	return viewport;
 }
 
 void viewport_destroy(Viewport* viewport)
 {
-	framebuffer_destroy(viewport->framebuffer);
-	texture_destroy(viewport->texture);
+	ASSERT(viewport, "attempt to destroy null viewport.");
+
+	if (viewport->shader.id > 0)
+		shader_destroy(viewport->shader);
+
+	if (viewport->quad_vbo > 0)
+		GL_CMD(glDeleteBuffers(1, &viewport->quad_vbo));
+
+	if (viewport->quad_vao > 0)
+		GL_CMD(glDeleteVertexArrays(1, &viewport->quad_vao));
+
+	if (viewport->framebuffer.id > 0)
+		framebuffer_destroy(viewport->framebuffer);
+
+	if (viewport->texture.id > 0)
+		texture_destroy(viewport->texture);
+	
 	free(viewport);
 }
 

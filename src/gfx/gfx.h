@@ -7,7 +7,7 @@
 
 #include <stdbool.h>
 
-bool gfx_init(unsigned long viewport_width, unsigned long viewport_height);
+bool gfx_init(unsigned int viewport_width, unsigned int viewport_height);
 void gfx_shutdown();
 
 void gfx_fit_viewport(int width, int height);

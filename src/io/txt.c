@@ -23,6 +23,7 @@ char* io_load_txt(const char* path)
 	if (size <= 0)
 	{
 		LOG_ERROR("could not get size of txt file '%s'", path);
+		fclose(fp);
 		return NULL;
 	}
 
@@ -35,10 +36,13 @@ char* io_load_txt(const char* path)
 	{
 		LOG_ERROR("could not read txt file '%s'", path);
 		free(buf);
+		fclose(fp);
 		return NULL;
 	}
 
 	buf[size] = '\0';
+
+	fclose(fp);
 
 	return buf;
 }

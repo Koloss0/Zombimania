@@ -15,10 +15,14 @@ static Window* window = NULL;
 
 bool core_init()
 {
-	INIT_FUNC();
+	REQUIRE_UNINIT();
+	init_status = INITIALISED;
 
 	if (!math_init())
+	{
+		core_shutdown();
 		return false;
+	}
 
 	window = window_create(&WINDOW_SETTINGS);
 	if (!window)
@@ -27,7 +31,7 @@ bool core_init()
 		return false;
 	}
 
-	if (!gfx_init(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
+	if (!gfx_init((unsigned)VIEWPORT_WIDTH, (unsigned)VIEWPORT_HEIGHT))
 	{
 		core_shutdown();
 		return false;
@@ -52,15 +56,18 @@ bool core_init()
 
 void core_shutdown()
 {
-	fsm_shutdown();
-	gfx_shutdown();
+	if (init_status == INITIALISED)
+	{
+		fsm_shutdown();
+		gfx_shutdown();
 
-	if (window)
-		window_destroy(window);
-	
-	math_shutdown();
+		if (window)
+			window_destroy(window);
+		
+		math_shutdown();
 
-	SHUTDOWN_FUNC();
+		init_status = UNINITIALISED;
+	}
 }
 
 void core_run()

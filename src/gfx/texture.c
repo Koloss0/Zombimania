@@ -18,7 +18,7 @@ Texture texture_create(Image image, const TexParameters* params)
 	if (!params)
 		params = &DEFAULT_TEX_PARAMS;
 	
-	Texture texture;
+	Texture texture = { .id = 0 };
 	
 	GL_CMD(glGenTextures(1, &texture.id));
 	GL_CMD(glBindTexture(GL_TEXTURE_2D, texture.id));

@@ -29,7 +29,7 @@ Window* window_create(const WindowSettings* window_settings)
 
 	if (!window)
 	{
-		LOG_ERROR("failed to create window: out of memory");
+		LOG_ERROR("failed to create window: out of memory.");
 		return NULL;
 	}
 
@@ -37,7 +37,7 @@ Window* window_create(const WindowSettings* window_settings)
 	{
 		if (!glfwInit())
 		{
-			LOG_ERROR("failed to create window: failed to initialise GLFW");
+			LOG_ERROR("failed to create window: failed to initialise GLFW.");
 			free(window);
 			glfwTerminate();
 			return NULL;
@@ -61,7 +61,7 @@ Window* window_create(const WindowSettings* window_settings)
 
 	if (!glfw_win)
 	{
-		LOG_ERROR("failed to create window: failed to create GLFW window");
+		LOG_ERROR("failed to create window: failed to create GLFW window.");
 		free(window);
 		glfwTerminate();
 		return NULL;
@@ -77,7 +77,7 @@ Window* window_create(const WindowSettings* window_settings)
 
 		if (!success)
 		{
-			LOG_ERROR("failed to create window: failed to load GLAD");
+			LOG_ERROR("failed to create window: failed to load GLAD.");
 			window_destroy(window);
 			glfwTerminate();
 			return NULL;

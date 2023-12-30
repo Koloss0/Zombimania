@@ -6,8 +6,7 @@
 
 Framebuffer framebuffer_create(Texture texture)
 {
-	Framebuffer framebuffer;
-	framebuffer.id = 0;
+	Framebuffer framebuffer = { .id = 0 };
 
 	GLuint id;
 	GL_CMD(glGenFramebuffers(1, &id));

@@ -302,21 +302,21 @@ static int read_pixel_array(uint8_t** data, FILE* f, uint32_t offset, long width
 
 Image io_load_bmp(const char* path, bool vflip)
 {
-	Image img;
+	Image img = {.data = NULL, .width = 0, .height = 0};
 	FILE* file;
 	int err;
 	BMPHeader header;
 	DIBHeader dib;
-
-	img.data = NULL;
-	img.width = 0;
-	img.height = 0;
+	uint8_t* pixel_array;
+	unsigned long w;
+	unsigned long h;
 
 	file = fopen(path, "rb");
 
 	if (file == NULL)
 	{
 		LOG_ERROR("Failed to open '%s'.", path);
+		fclose(file);
 		return img;
 	}
 
@@ -324,12 +324,14 @@ Image io_load_bmp(const char* path, bool vflip)
 
 	if (err != 0)
 	{
+		fclose(file);
 		return img;
 	}
 
 	if (header.magic_number[0] != 'B' || header.magic_number[1] != 'M')
 	{
 		LOG_ERROR("Failed to load BMP: only files marked with BM are supported.");
+		fclose(file);
 		return img;
 	}
 	
@@ -337,19 +339,20 @@ Image io_load_bmp(const char* path, bool vflip)
 
 	if (err != 0)
 	{
+		fclose(file);
 		return img;
 	}
 
-	uint8_t* pixel_array;
 	err = read_pixel_array(&pixel_array, file, header.data_offset, dib.width, dib.height, dib.bpp, vflip);
 
 	if (err != 0)
 	{
+		fclose(file);
 		return img;
 	}
 	
-	unsigned long w = (unsigned long)(dib.width < 0 ? -dib.width : dib.width);
-	unsigned long h = (unsigned long)(dib.height < 0 ? -dib.height : dib.height);
+	w = (unsigned long)(dib.width < 0 ? -dib.width : dib.width);
+	h = (unsigned long)(dib.height < 0 ? -dib.height : dib.height);
 	
 	img.data = pixel_array;
 	img.width = w;

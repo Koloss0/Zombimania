@@ -11,7 +11,8 @@
 
 int math_init()
 {
-	INIT_FUNC();
+	REQUIRE_UNINIT();
+	init_status = INITIALISED;
 
 	srand((unsigned int)time(NULL));
 
@@ -20,7 +21,7 @@ int math_init()
 
 void math_shutdown()
 {
-	SHUTDOWN_FUNC();
+	init_status = UNINITIALISED;
 }
 
 int math_randi(int n)

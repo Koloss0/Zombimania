@@ -10,6 +10,7 @@
 #include "gl.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 
 typedef struct
@@ -37,35 +38,43 @@ static struct
 static GLuint create_quad_vbo();
 static GLuint create_sprites_vbo();
 
-bool sprite2d_init(unsigned long viewport_width, unsigned long viewport_height)
+bool sprite2d_init(unsigned int viewport_width, unsigned int viewport_height)
 {
-	INIT_FUNC();
+	REQUIRE_UNINIT();
+	init_status = INITIALISED;
 
-	state.sprites_size = 0;
+	// zero-initialise all state.
+	memset(&state, 0, sizeof(state));
 
-	// create vao
+	// create vao.
 	GL_CMD(glGenVertexArrays(1, &state.vao));
 	GL_CMD(glBindVertexArray(state.vao));
 
+	// create vbo's.
 	state.quad_vbo = create_quad_vbo();
 	state.sprites_vbo = create_sprites_vbo();
 	
 	GL_CMD(glBindVertexArray(0));
 
+	// create shader.
 	state.shader = shader_create("res/shaders/sprite2d.shader");
 	if (state.shader.id == 0)
 	{
 		LOG_ERROR("failed to initialise Sprite2D: could not create shader.");
+		sprite2d_shutdown();
 		return false;
 	}
 
+	// load texture image.
 	Image texture_image = io_load_bmp("res/images/sprite2d.bmp", false);
 	if (!texture_image.data)
 	{
 		LOG_ERROR("failed to initialise Sprite2D: could not load texture atlas.");
+		sprite2d_shutdown();
 		return false;
 	}
 
+	// create texture.
 	state.texture_atlas = texture_create(texture_image, NULL);
 	ASSERT(state.texture_atlas.id > 0,
 			"failed to initialise Sprite2D: failed to create texture.");
@@ -81,12 +90,25 @@ bool sprite2d_init(unsigned long viewport_width, unsigned long viewport_height)
 
 void sprite2d_shutdown()
 {
-	GL_CMD(glDeleteBuffers(1, &state.quad_vbo));
-	GL_CMD(glDeleteVertexArrays(1, &state.vao));
+	if (init_status == INITIALISED)
+	{
+		if (state.vao > 0)
+			GL_CMD(glDeleteVertexArrays(1, &state.vao));
 
-	shader_destroy(state.shader);
+		if (state.quad_vbo > 0)
+			GL_CMD(glDeleteBuffers(1, &state.quad_vbo));
 
-	SHUTDOWN_FUNC();
+		if (state.sprites_vbo > 0)
+			GL_CMD(glDeleteBuffers(1, &state.sprites_vbo));
+		
+		if (state.shader.id > 0)
+			shader_destroy(state.shader);
+
+		if (state.texture_atlas.id > 0)
+			texture_destroy(state.texture_atlas);
+
+		init_status = UNINITIALISED;
+	}
 }
 
 void sprite2d_draw(int x, int y, int width, int height, TextureRect texture_rect)

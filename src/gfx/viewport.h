@@ -8,8 +8,8 @@
 
 typedef struct
 {
-	unsigned long width;
-	unsigned long height;
+	unsigned int width;
+	unsigned int height;
 	Framebuffer framebuffer;
 	Texture texture;
 	Shader shader;
@@ -17,7 +17,7 @@ typedef struct
 	GLuint quad_vao;
 } Viewport;
 
-Viewport* viewport_create(unsigned long width, unsigned long height);
+Viewport* viewport_create(unsigned int width, unsigned int height);
 void viewport_destroy(Viewport* viewport);
 void viewport_bind(Viewport* viewport);
 void viewport_unbind();
