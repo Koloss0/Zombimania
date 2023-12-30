@@ -31,6 +31,5 @@ uniform sampler2D textureImage;
 
 void main()
 {
-	vec3 c = texture(textureImage, uv).rgb;
-	color = vec4(c, 1.0f);
+	color = texture(textureImage, uv);
 }

@@ -23,6 +23,9 @@ bool gfx_init(unsigned int viewport_width, unsigned int viewport_height)
 	REQUIRE_UNINIT();
 	init_status = INITIALISED;
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	viewport = viewport_create((unsigned)viewport_width, (unsigned)viewport_height);
 	if (!viewport)
 	{
