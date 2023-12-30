@@ -20,6 +20,7 @@ bool core_init()
 
 	if (!math_init())
 	{
+		LOG_ERROR("Math failed to initialise.");
 		core_shutdown();
 		return false;
 	}
@@ -27,12 +28,14 @@ bool core_init()
 	window = window_create(&WINDOW_SETTINGS);
 	if (!window)
 	{
+		LOG_ERROR("window failed to initialise.");
 		core_shutdown();
 		return false;
 	}
 
 	if (!gfx_init((unsigned)VIEWPORT_WIDTH, (unsigned)VIEWPORT_HEIGHT))
 	{
+		LOG_ERROR("GFX failed to initialise.");
 		core_shutdown();
 		return false;
 	}
@@ -45,6 +48,7 @@ bool core_init()
 
 	if (!fsm_init(INITIAL_STATE))
 	{
+		LOG_ERROR("FSM failed to initialise.");
 		core_shutdown();
 		return false;
 	}

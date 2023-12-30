@@ -44,6 +44,7 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 		if (frag_buf)
 			free(frag_buf);
 
+		fclose(fp);
 		return OUT_OF_MEMORY;
 	}
 
@@ -89,6 +90,7 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 
 						free(vert_buf);
 						free(frag_buf);
+						fclose(fp);
 						return OUT_OF_MEMORY;
 					}
 
@@ -106,6 +108,7 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 
 						free(vert_buf);
 						free(frag_buf);
+						fclose(fp);
 						return OUT_OF_MEMORY;
 					}
 
@@ -125,6 +128,7 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 
 		free(vert_buf);
 		free(frag_buf);
+		fclose(fp);
 		return BAD_FORMAT;
 	}
 	
@@ -134,11 +138,14 @@ static enum ParseError parse_shader_file(const char* path, char** vertex, char**
 
 		free(vert_buf);
 		free(frag_buf);
+		fclose(fp);
 		return BAD_FORMAT;
 	}
 
 	*vertex = vert_buf;
 	*fragment = frag_buf;
+
+	fclose(fp);
 
 	return OK;
 }
