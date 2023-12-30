@@ -12,4 +12,6 @@ void fsm_queue_next_state(GameStateID state);
 void fsm_change_state(GameStateID state);
 void fsm_update(double delta);
 
+void fsm_key_input(int key, int scancode, int action, int mods);
+
 #endif

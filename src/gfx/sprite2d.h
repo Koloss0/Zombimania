@@ -14,6 +14,6 @@ void sprite2d_begin();
 void sprite2d_end();
 void sprite2d_flush();
 
-void sprite2d_draw(float x, float y, float width, float height, TextureRect texture_rect);
+void sprite2d_draw(int x, int y, int width, int height, TextureRect texture_rect);
 
 #endif
