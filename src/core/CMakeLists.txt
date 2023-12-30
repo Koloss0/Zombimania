@@ -1,1 +1,1 @@
-target_sources(zombimania PRIVATE fsm.c main.c window.c)
+target_sources(zombimania PRIVATE core.c fsm.c main.c window.c)

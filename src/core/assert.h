@@ -2,23 +2,28 @@
 #define ASSERT_H
 
 #include "pp.h"
+#include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ASSERT(cond, ...) \
-	do { \
-		if (!(cond)) \
-		{ \
-			fprintf(stderr, "[Core] Assertion failed: '" #cond "' (%s, line %i)\n", __FILE__, __LINE__); \
-			 \
-			if (NUM_ARGS(__VA_ARGS__) > 0) \
+#ifdef ZBM_ENABLE_ASSERTS
+
+	#define ASSERT(cond, ...) \
+		do { \
+			if (!(cond)) \
 			{ \
-				fprintf(stderr, "  Info: " __VA_ARGS__); \
-				fprintf(stderr, "\n"); \
+				fprintf(stderr, "[Core] Assertion failed: '" #cond "' (%s:%i)\n", __FILE__, __LINE__); \
+				\
+				if (NUM_ARGS(__VA_ARGS__) > 0) \
+				{ \
+					fprintf(stderr, "  Info: " __VA_ARGS__); \
+					fprintf(stderr, "\n"); \
+				} \
+				exit(1); \
 			} \
-			exit(1); \
-		} \
-	} while (0)
+		} while (0)
+
+#endif
 
 #endif

@@ -1,5 +1,5 @@
 #include "fsm.h"
-
+#include "init.h"
 #include "states/states.h"
 
 #include <stdlib.h>
@@ -26,6 +26,8 @@ static GameStateID next_state;
 
 bool fsm_init(GameStateID initial_state)
 {
+	INIT_FUNC();
+
 	current_state = NONE;
 
 	// create the structs for all game states.
@@ -48,15 +50,21 @@ void fsm_shutdown()
 	// destroy the structs for all game states.
 	DESTROY_STATE(mm);
 	// ...
+
+	SHUTDOWN_FUNC();
 }
 
 void fsm_queue_next_state(GameStateID state)
 {
+	REQUIRE_INIT();
+
 	next_state = state;
 }
 
 void fsm_change_state(GameStateID state)
 {
+	REQUIRE_INIT();
+
 	GameStateID old_state = current_state;
 	current_state = state;
 
@@ -72,6 +80,8 @@ void fsm_change_state(GameStateID state)
 
 void fsm_update(double delta)
 {
+	REQUIRE_INIT();
+
 	if (current_state != NONE)
 	{
 		next_state = NONE;

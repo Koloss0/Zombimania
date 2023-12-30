@@ -17,4 +17,7 @@ extern const unsigned long VIEWPORT_HEIGHT;
 
 extern const GameStateID INITIAL_STATE;
 
+// comment out this line to disable assertions.
+#define ZBM_ENABLE_ASSERTS
+
 #endif

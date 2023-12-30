@@ -42,7 +42,7 @@ Texture texture_create(Image image, const TexParameters* params)
 
 void texture_destroy(Texture texture)
 {
-	GL_CMD(glDeleteTextures(1, texture.id));
+	GL_CMD(glDeleteTextures(1, &texture.id));
 }
 
 void texture_bind(Texture texture)

@@ -4,6 +4,7 @@
 #include "texture_rect.h"
 #include "io/bmp.h"
 #include "math/matrix.h"
+#include "core/init.h"
 #include "core/log.h"
 #include "core/assert.h"
 #include "gl.h"
@@ -38,6 +39,8 @@ static GLuint create_sprites_vbo();
 
 bool sprite2d_init(unsigned long viewport_width, unsigned long viewport_height)
 {
+	INIT_FUNC();
+
 	state.sprites_size = 0;
 
 	// create vao
@@ -82,10 +85,14 @@ void sprite2d_shutdown()
 	GL_CMD(glDeleteVertexArrays(1, &state.vao));
 
 	shader_destroy(state.shader);
+
+	SHUTDOWN_FUNC();
 }
 
 void sprite2d_draw(float x, float y, float width, float height, TextureRect texture_rect)
 {
+	REQUIRE_INIT();
+
 	if (state.sprites_size < SPRITES_MAX)
 	{
 		float tex_width = (float)state.texture_atlas.width;
@@ -112,15 +119,21 @@ void sprite2d_draw(float x, float y, float width, float height, TextureRect text
 }
 
 void sprite2d_begin()
-{}
+{
+	REQUIRE_INIT();
+}
 
 void sprite2d_end()
 {
+	REQUIRE_INIT();
+
 	sprite2d_flush();
 }
 
 void sprite2d_flush()
 {
+	REQUIRE_INIT();
+	
 	GL_CMD(glBindVertexArray(state.vao));
 	
 	texture_bind(state.texture_atlas);	

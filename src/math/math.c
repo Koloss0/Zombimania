@@ -1,4 +1,6 @@
 #include "math.h"
+#include "core/init.h"
+#include "core/assert.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -7,29 +9,40 @@
 #include <float.h>
 #include <math.h>
 
-static bool initialised = false;
-
 int math_init()
 {
+	INIT_FUNC();
+
 	srand((unsigned int)time(NULL));
-	initialised = true;
+
 	return true;
+}
+
+void math_shutdown()
+{
+	SHUTDOWN_FUNC();
 }
 
 int math_randi(int n)
 {
-	assert(initialised);
-	assert(n > 0);
+	REQUIRE_INIT();
+	ASSERT(n > 0, "invalid upper bound.");
+
 	return rand() % n;
 }
 
 double math_randf()
 {
+	REQUIRE_INIT();
+
 	return (double)rand() / RAND_MAX;
 }
 
 double math_randf_range(double min, double max)
 {
+	REQUIRE_INIT();
+	ASSERT(min <= max, "min must be less than max.");
+
 	double div = RAND_MAX / (max - min);
 	return min + (rand() / div);
 }
@@ -37,6 +50,8 @@ double math_randf_range(double min, double max)
 // TODO: optimize (can make use of z1)
 double math_randf_gaussian(double mu, double sigma)
 {
+	REQUIRE_INIT();
+
 	double u1, u2;
 	do
 	{
@@ -54,12 +69,16 @@ double math_randf_gaussian(double mu, double sigma)
 
 double math_fmod(double a, double b)
 {
+	WARN_INIT();
+
 	double r = fmod(a, b);
 	return r < 0.0 ? r + b : r;
 }
 
 double math_dist(double x1, double y1, double x2, double y2)
 {
+	WARN_INIT();
+
 	double dx = x2 - x1;
 	double dy = y2 - y1;
 

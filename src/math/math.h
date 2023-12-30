@@ -10,10 +10,14 @@
 #define QUART_PI M_PI_4
 
 int math_init();
+void math_shutdown();
+
+// random number generators.
 int math_randi(int n);
 double math_randf();
 double math_randf_range(double min, double max);
 double math_randf_gaussian(double mu, double sigma);
+
 double math_fmod(double a, double b);
 double math_dist(double x1, double y1, double x2, double y2);
 

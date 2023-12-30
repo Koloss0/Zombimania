@@ -4,15 +4,15 @@
 #include "texture_rect.h"
 #include "viewport.h"
 
-#include "core/log.h"
 #include "core/assert.h"
+#include "core/init.h"
+#include "core/log.h"
 
 #include <stdbool.h>
 
 // TODO
 // [ ] perspective
 
-static bool init = false;
 static Viewport* viewport = NULL;
 static struct {
 	int x, y, w, h;
@@ -20,7 +20,7 @@ static struct {
 
 bool gfx_init(unsigned long viewport_width, unsigned long viewport_height)
 {
-	ASSERT(!init, "attempt to initialise GFX twice");
+	INIT_FUNC();
 
 	viewport = viewport_create(viewport_width, viewport_height);
 	if (!viewport)
@@ -32,23 +32,22 @@ bool gfx_init(unsigned long viewport_width, unsigned long viewport_height)
 	if (!sprite2d_init(viewport_width, viewport_height))
 		return false;
 
-	init = true;
 	return true;
 }
 
 void gfx_shutdown()
 {
-	ASSERT(init, "attempt to shutdown GFX when uninitialised");
-
 	sprite2d_shutdown();
 
 	viewport_destroy(viewport);
 
-	init = false;
+	SHUTDOWN_FUNC();
 }
 
 void gfx_fit_viewport(int width, int height)
 {
+	REQUIRE_INIT();
+
 	ASSERT(width >= 0, "invalid window width.");
 	ASSERT(height >= 0, "invalid window height.");
 
@@ -79,6 +78,8 @@ void gfx_fit_viewport(int width, int height)
 
 void gfx_begin(const Camera* camera)
 {
+	REQUIRE_INIT();
+
 	// render to viewport.
 	viewport_bind(viewport);
 
@@ -87,6 +88,8 @@ void gfx_begin(const Camera* camera)
 
 void gfx_end()
 {
+	REQUIRE_INIT();
+
 	gfx_flush();
 	sprite2d_end();
 
@@ -103,16 +106,22 @@ void gfx_end()
 
 void gfx_flush()
 {
+	REQUIRE_INIT();
+
 	sprite2d_flush();
 }
 
 void gfx_background(float r, float g, float b)
 {
+	REQUIRE_INIT();
+
 	glClearColor(r, g, b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void gfx_sprite2d(float x, float y, float width, float height, TextureRect texture_rect)
 {
+	REQUIRE_INIT();
+
 	sprite2d_draw(x, y, width, height, texture_rect);
 }
