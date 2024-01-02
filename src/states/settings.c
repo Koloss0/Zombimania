@@ -14,8 +14,6 @@ static int selected_button;
 
 static void on_back_pressed();
 
-
-
 typedef struct
 {
 	int x;
@@ -35,13 +33,6 @@ static Button buttons[] = {
 	
 };
 
-
-
-static Camera camera = {
-	.x = 0.0, .y = 0.0, .z = 0.0,
-	.rx = 0.0, .ry = 0.0
-};
-
 // called once at the start of the program.
 void settings_init()
 {
@@ -52,7 +43,6 @@ void settings_init()
 	}
 
 	selected_button = 0;
-
 }
 
 // called once before the program exits.
@@ -71,17 +61,15 @@ void settings_exit()
 // called every frame when the state is active.
 void settings_update(double delta)
 {
-	gfx_begin(&camera);
+	gfx_begin(&CAMERA_DEFAULT);
 
 	gfx_background(0.11f, 0.11f, 0.11f);
-
 
 	gfx_sprite2d(160,190,0,0, (TextureRect){0, 48, 197, 20}); // zombimania
 	
 	for(int i = 0; i < NUM_BUTTONS; i++)
 	{
 		gfx_sprite2d(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, buttons[i].textrect);
-		
 	}
 
 	gfx_sprite2d(10, buttons[selected_button].y, 0, 0, (TextureRect){1, 72, 14, 16});
@@ -92,49 +80,29 @@ void settings_update(double delta)
 // called when a key is either pressed, repeated (held down), or released.
 void settings_key_input(int key, int action, int scancode, int mods)
 {
-	if(action == GLFW_PRESS)
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
 		if(key == GLFW_KEY_UP)
 		{
 			selected_button--;
-			camera.z += 0.1;
+			if(selected_button < 0)
+				selected_button = 0;
 		}
 
 		if(key == GLFW_KEY_DOWN)
 		{
 			selected_button++;
-			camera.z -= 0.1;
+			if(selected_button >= NUM_BUTTONS)
+				selected_button = NUM_BUTTONS - 1;
 		}
+	}
+	
+	if (action == GLFW_PRESS)
+	{
 		if(key == GLFW_KEY_ENTER)
 		{
 			buttons[selected_button].callback_function();
 		}
-	}
-
-	if(action == GLFW_REPEAT)
-	{
-		if(key == GLFW_KEY_UP)
-		{
-			selected_button--;
-			camera.z += 0.1;
-		}
-
-		if(key == GLFW_KEY_DOWN)
-		{
-			selected_button++;
-			camera.z -= 0.1;
-		}
-	}
-
-	
-	if(selected_button < 0)
-	{
-		selected_button = 0;
-	}
-
-	if(selected_button >= NUM_BUTTONS)
-	{
-		selected_button = NUM_BUTTONS - 1;
 	}
 }
 

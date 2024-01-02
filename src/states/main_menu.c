@@ -17,8 +17,6 @@ static void on_settings_pressed();
 static void on_play_pressed();
 static void on_quit_pressed();
 
-
-
 typedef struct
 {
 	int x;
@@ -179,49 +177,29 @@ void mm_update(double delta)
 // called when a key is either pressed, repeated (held down), or released.
 void mm_key_input(int key, int action, int scancode, int mods)
 {
-	if(action == GLFW_PRESS)
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
 		if(key == GLFW_KEY_UP)
 		{
 			selected_button--;
-			camera.z += 0.1;
+			if(selected_button < 0)
+				selected_button = 0;
 		}
 
 		if(key == GLFW_KEY_DOWN)
 		{
 			selected_button++;
-			camera.z -= 0.1;
+			if(selected_button >= NUM_BUTTONS)
+				selected_button = NUM_BUTTONS - 1;
 		}
+	}
+
+	if (action == GLFW_PRESS)
+	{
 		if(key == GLFW_KEY_ENTER)
 		{
 			buttons[selected_button].callback_function();
 		}
-	}
-
-	if(action == GLFW_REPEAT)
-	{
-		if(key == GLFW_KEY_UP)
-		{
-			selected_button--;
-			camera.z += 0.1;
-		}
-
-		if(key == GLFW_KEY_DOWN)
-		{
-			selected_button++;
-			camera.z -= 0.1;
-		}
-	}
-
-	
-	if(selected_button < 0)
-	{
-		selected_button = 0;
-	}
-
-	if(selected_button >= NUM_BUTTONS)
-	{
-		selected_button = NUM_BUTTONS - 1;
 	}
 }
 
@@ -233,10 +211,12 @@ static void on_settings_pressed()
 {
 	fsm_change_state(SETTINGS);
 }
+
 static void on_play_pressed()
 {
-
+	fsm_change_state(GAME);
 }
+
 static void on_quit_pressed()
 {
 	exit(0);
