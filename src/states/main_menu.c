@@ -1,12 +1,15 @@
 #include "states.h"
+#include "core/fsm.h"
 #include "gfx/gfx.h"
 #include "gfx/mesh.h"
 #include "io/bmp.h"
+#include "io/input.h"
 #include "config.h"
+
+// standard libraries
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "core/fsm.h"
 
 static const int NUM_BUTTONS = 3;
 static const int LEFT_PAD = 24; // in px
@@ -155,6 +158,16 @@ void mm_exit()
 // called every frame when the state is active.
 void mm_update(double delta)
 {
+	// input processing goes here.
+	if (input_is_key_pressed(GLFW_KEY_W))
+	{
+		camera.z += 4.0 * delta;
+	}
+	else if (input_is_key_pressed(GLFW_KEY_S))
+	{
+		camera.z -= 4.0 * delta;
+	}
+
 	gfx_begin(&camera);
 
 	gfx_background(0.11f, 0.11f, 0.11f);

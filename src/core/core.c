@@ -6,6 +6,7 @@
 #include "gfx/gfx.h"
 #include "fsm.h"
 #include "io/txt.h"
+#include "io/input.h"
 
 #include <stdbool.h>
 
@@ -45,6 +46,13 @@ bool core_init()
 		window_get_size(window, &w, &h);
 		gfx_fit_viewport(w, h);
 	}
+	
+	if (!input_init(window))
+	{
+		LOG_ERROR("Input failed to initialise.");
+		core_shutdown();
+		return false;
+	}
 
 	if (!fsm_init(INITIAL_STATE))
 	{
@@ -63,6 +71,7 @@ void core_shutdown()
 	if (init_status == INITIALISED)
 	{
 		fsm_shutdown();
+		input_shutdown();
 		gfx_shutdown();
 
 		if (window)
