@@ -7,6 +7,7 @@
 #include "fsm.h"
 #include "io/txt.h"
 #include "io/input.h"
+#include "sfx/sfx.h"
 
 #include <stdbool.h>
 
@@ -54,6 +55,13 @@ bool core_init()
 		return false;
 	}
 
+	if (!sfx_init())
+	{
+		LOG_ERROR("SFX failed to initialise.");
+		core_shutdown();
+		return false;
+	}
+
 	if (!fsm_init(INITIAL_STATE))
 	{
 		LOG_ERROR("FSM failed to initialise.");
@@ -71,6 +79,7 @@ void core_shutdown()
 	if (init_status == INITIALISED)
 	{
 		fsm_shutdown();
+		sfx_shutdown();
 		input_shutdown();
 		gfx_shutdown();
 
