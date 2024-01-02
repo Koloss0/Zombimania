@@ -3,14 +3,21 @@
 #include "gfx/mesh.h"
 #include "io/bmp.h"
 #include "config.h"
-
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
+#include "core/fsm.h"
 
 static const int NUM_BUTTONS = 3;
 static const int LEFT_PAD = 24; // in px
 static const int VERT_SPACE = 24; // in px
 static int selected_button;
+
+static void on_settings_pressed();
+static void on_play_pressed();
+static void on_quit_pressed();
+
+
 
 typedef struct
 {
@@ -19,20 +26,24 @@ typedef struct
 	int height;	
 	int width;
 	TextureRect textrect;
+	void (*callback_function)();
 } Button;
 
 static Button buttons[] = {
 	{ // play
 		.width=58, .height=16, 
-		.textrect={.x=0,.y=32,.w=58,.h=16}
+		.textrect={.x=0,.y=32,.w=58,.h=16},
+		.callback_function=on_play_pressed
 	},
 	{ // settings
 		.width=116, .height=16,
-		.textrect={.x=0,.y=17,.w=116,.h=15}
+		.textrect={.x=0,.y=17,.w=116,.h=15},
+		.callback_function=on_settings_pressed
 	},
 	{ // quit
 		.width=56, .height=16, 
-		.textrect={.x=0,.y=0,.w=56,.h=16}
+		.textrect={.x=0,.y=0,.w=56,.h=16},
+		.callback_function=on_quit_pressed
 	}
 };
 
@@ -168,7 +179,26 @@ void mm_update(double delta)
 // called when a key is either pressed, repeated (held down), or released.
 void mm_key_input(int key, int action, int scancode, int mods)
 {
-	if(action == GLFW_PRESS || action == GLFW_REPEAT)
+	if(action == GLFW_PRESS)
+	{
+		if(key == GLFW_KEY_UP)
+		{
+			selected_button--;
+			camera.z += 0.1;
+		}
+
+		if(key == GLFW_KEY_DOWN)
+		{
+			selected_button++;
+			camera.z -= 0.1;
+		}
+		if(key == GLFW_KEY_ENTER)
+		{
+			buttons[selected_button].callback_function();
+		}
+	}
+
+	if(action == GLFW_REPEAT)
 	{
 		if(key == GLFW_KEY_UP)
 		{
@@ -183,6 +213,7 @@ void mm_key_input(int key, int action, int scancode, int mods)
 		}
 	}
 
+	
 	if(selected_button < 0)
 	{
 		selected_button = 0;
@@ -197,3 +228,16 @@ void mm_key_input(int key, int action, int scancode, int mods)
 // called when a mouse button is pressed or released.
 void mm_mouse_button_input(int button, bool pressed, int mods)
 {}
+
+static void on_settings_pressed()
+{
+	fsm_change_state(SETTINGS);
+}
+static void on_play_pressed()
+{
+
+}
+static void on_quit_pressed()
+{
+	exit(0);
+}

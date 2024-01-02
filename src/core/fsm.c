@@ -33,10 +33,14 @@ bool fsm_init(GameStateID initial_state)
 
 	// create the structs for all game states.
 	CREATE_STATE(MAIN_MENU, mm);
+	CREATE_STATE(SETTINGS, settings);
+	CREATE_STATE(GAME,game);
 	// ...
 
 	// call init functions of all game states.
 	INIT_STATE(mm);
+	INIT_STATE(settings);
+	INIT_STATE(game);
 	// ...
 
 	fsm_change_state(initial_state);
@@ -52,6 +56,8 @@ void fsm_shutdown()
 
 		// destroy the structs for all game states.
 		DESTROY_STATE(mm);
+		DESTROY_STATE(settings);
+		DESTROY_STATE(game);
 		// ...
 
 		init_status = UNINITIALISED;

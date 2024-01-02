@@ -22,18 +22,21 @@ typedef struct
 	void namespace##_key_input(int key, int action, int scancode, int mods); \
 	void namespace##_mouse_button_input(int button, bool pressed, int mods)
 
-#define NUM_STATES 2
+#define NUM_STATES 3
 
 typedef enum
 {
 	NONE = -1,
 	MAIN_MENU = 0,
-	GAME,
+	SETTINGS,
+	GAME
 	// ...
 } GameStateID;
 
 // define all game states here.
 GAME_STATE_INTERFACE(mm);
+GAME_STATE_INTERFACE(settings);
+GAME_STATE_INTERFACE(game);
 // ...
 
 #endif
