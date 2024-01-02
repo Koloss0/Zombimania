@@ -121,11 +121,11 @@ void game_update(double delta)
 	}
 	 if (input_is_key_pressed(GLFW_KEY_A))
 	{
-		camera.x -= 4.0 * delta;
+		camera.x += 4.0 * delta;
 	}
 	 if (input_is_key_pressed(GLFW_KEY_D))
 	{
-		camera.x += 4.0 * delta;
+		camera.x -= 4.0 * delta;
 	}
 
 	gfx_begin(&camera);
