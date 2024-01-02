@@ -1,1 +1,1 @@
-target_include_directories(zombimania PRIVATE include)
+target_include_directories(zombimania SYSTEM PRIVATE include)
