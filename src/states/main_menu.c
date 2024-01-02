@@ -5,11 +5,13 @@
 #include "io/bmp.h"
 #include "io/input.h"
 #include "config.h"
-
+#include "sfx/sfx.h"
 // standard libraries
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
+
 
 static const int NUM_BUTTONS = 3;
 static const int LEFT_PAD = 24; // in px
@@ -134,6 +136,8 @@ void mm_init()
 	cube_shader = shader_create("res/shaders/cube.shader");
 
 	cube = mesh_create(vertices, NUM_VERTS, cube_texture, cube_shader);
+
+	sfx_play_sound("res/sfx/titlescreen.mp3");
 }
 
 // called once before the program exits.
