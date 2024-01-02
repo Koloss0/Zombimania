@@ -60,19 +60,19 @@ void viewport_destroy(Viewport* viewport)
 {
 	ASSERT(viewport, "attempt to destroy null viewport.");
 
-	if (viewport->shader.id > 0)
+	if (viewport->shader.id)
 		shader_destroy(viewport->shader);
 
-	if (viewport->quad_vbo > 0)
+	if (viewport->quad_vbo)
 		GL_CMD(glDeleteBuffers(1, &viewport->quad_vbo));
 
-	if (viewport->quad_vao > 0)
+	if (viewport->quad_vao)
 		GL_CMD(glDeleteVertexArrays(1, &viewport->quad_vao));
 
-	if (viewport->framebuffer.id > 0)
+	if (viewport->framebuffer.id)
 		framebuffer_destroy(viewport->framebuffer);
 
-	if (viewport->texture.id > 0)
+	if (viewport->texture.id)
 		texture_destroy(viewport->texture);
 	
 	free(viewport);

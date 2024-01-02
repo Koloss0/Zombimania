@@ -4,6 +4,7 @@
 #include "gl.h"
 #include "camera.h"
 #include "texture_rect.h"
+#include "mesh.h"
 
 #include <stdbool.h>
 
@@ -18,5 +19,6 @@ void gfx_flush();
 
 void gfx_background(float r, float g, float b);
 void gfx_sprite2d(int x, int y, int width, int height, TextureRect texture_rect);
+void gfx_mesh(Mesh* mesh);
 
 #endif

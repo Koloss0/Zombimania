@@ -3,6 +3,7 @@ target_sources(zombimania PRIVATE
 	framebuffer.c
 	gfx.c
 	gl.c
+	mesh.c
 	shader.c
 	sprite2d.c
 	texture.c

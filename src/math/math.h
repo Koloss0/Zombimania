@@ -21,4 +21,14 @@ double math_randf_gaussian(double mu, double sigma);
 double math_fmod(double a, double b);
 double math_dist(double x1, double y1, double x2, double y2);
 
+static inline double math_deg_to_rad(double deg)
+{
+	return deg * PI / 180.0;
+}
+
+static inline double math_rad_to_deg(double rad)
+{
+	return rad * 180.0 / PI;
+}
+
 #endif

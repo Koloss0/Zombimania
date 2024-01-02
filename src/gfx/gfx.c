@@ -10,13 +10,9 @@
 
 #include <stdbool.h>
 
-// TODO
-// [ ] perspective
-
 static Viewport* viewport = NULL;
-static struct {
-	int x, y, w, h;
-} screen_bounds = {0,0,0,0};
+static struct { int x, y, w, h; } screen_bounds = {0,0,0,0};
+static const Camera* current_camera = NULL;
 
 bool gfx_init(unsigned int viewport_width, unsigned int viewport_height)
 {
@@ -25,6 +21,8 @@ bool gfx_init(unsigned int viewport_width, unsigned int viewport_height)
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_DEPTH_TEST);
 
 	viewport = viewport_create((unsigned)viewport_width, (unsigned)viewport_height);
 	if (!viewport)
@@ -93,6 +91,10 @@ void gfx_begin(const Camera* camera)
 {
 	REQUIRE_INIT();
 
+	current_camera = camera;
+
+	glClearDepth(1.0f);
+
 	// render to viewport.
 	viewport_bind(viewport);
 
@@ -112,7 +114,7 @@ void gfx_end()
 
 	// black bars.
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	viewport_draw(viewport);
 }
@@ -137,4 +139,20 @@ void gfx_sprite2d(int x, int y, int width, int height, TextureRect texture_rect)
 	REQUIRE_INIT();
 
 	sprite2d_draw(x, y, width, height, texture_rect);
+}
+
+void gfx_mesh(Mesh* mesh)
+{
+	Shader shader = mesh_get_shader(mesh);
+
+	shader_use(shader);
+
+	Mat4 view = MAT4_IDENTITY;
+	view.x = (float)current_camera->x;
+	view.y = (float)current_camera->y;
+	view.z = (float)current_camera->z;
+
+	shader_set_mat4(shader, "view", &view);
+
+	mesh_draw(mesh);
 }
