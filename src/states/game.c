@@ -115,24 +115,23 @@ void game_update(double delta)
 	{
 		camera.z += 4.0 * delta;
 	}
-	else if (input_is_key_pressed(GLFW_KEY_S))
+	 if (input_is_key_pressed(GLFW_KEY_S))
 	{
 		camera.z -= 4.0 * delta;
 	}
-	else if (input_is_key_pressed(GLFW_KEY_A))
+	 if (input_is_key_pressed(GLFW_KEY_A))
 	{
 		camera.x -= 4.0 * delta;
 	}
-	else if (input_is_key_pressed(GLFW_KEY_D))
+	 if (input_is_key_pressed(GLFW_KEY_D))
 	{
 		camera.x += 4.0 * delta;
 	}
 
 	gfx_begin(&camera);
 	gfx_background(0.2f, 0.2f, 0.2f);
-
 	gfx_mesh(cube);
-
+	gfx_sprite2d(VIEWPORT_WIDTH/2,20,40,60,(TextureRect){85,69,20,23});//gunhand
 	gfx_end();
 }
 
