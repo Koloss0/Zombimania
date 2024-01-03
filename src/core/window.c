@@ -1,9 +1,9 @@
 #include "window.h"
 
-#include "gfx/gfx.h"
 #include "gfx/gl.h"
+
 #include "core/log.h"
-#include "fsm.h"
+#include "core/assert.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -11,6 +11,7 @@
 struct Window
 {
 	GLFWwindow* glfw_window;
+	WindowEventCallback event_callback;
 };
 
 static unsigned int num_windows = 0;
@@ -19,13 +20,16 @@ static GLFWwindow* create_glfw_window(
 		int width, int height,
 		const char* title, GLFWmonitor* monitor);
 static void on_glfw_error(int error, const char* desc);
-static void resize_callback(GLFWwindow* window, int width, int height);
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-static void cursor_position_callback(GLFWwindow* window, double x, double y);
+static void close_callback(GLFWwindow* glfw_window);
+static void resize_callback(GLFWwindow* glfw_window, int width, int height);
+static void key_callback(GLFWwindow* glfw_window, int key, int scancode, int action, int mods);
+static void mouse_button_callback(GLFWwindow* glfw_window, int button, int action, int mods);
+static void cursor_position_callback(GLFWwindow* glfw_window, double x, double y);
+static void cursor_pos_to_screen_pos(const Window* window, double* x, double* y);
 
 Window* window_create(const WindowSettings* window_settings)
 {
-	Window* window = malloc(sizeof(Window));
+	Window* window = calloc(1, sizeof(Window));
 
 	if (!window)
 	{
@@ -86,13 +90,6 @@ Window* window_create(const WindowSettings* window_settings)
 	
 	glfwSetWindowUserPointer(glfw_win, window);
 
-	glfwSetFramebufferSizeCallback(glfw_win, resize_callback);
-	glfwSetKeyCallback(glfw_win, key_callback);
-	glfwSetCursorPosCallback(glfw_win, cursor_position_callback);
-
-	// FIXME: this causes gfx_fit_viewport to be called before gfx_init is called.
-	//resize_callback(glfw_win, (int)window_settings->width, (int)window_settings->height);
-
 	if (window_settings->vsync)
 	{
 		glfwSwapInterval(1);
@@ -127,6 +124,34 @@ bool window_should_close(Window* window)
 	return glfwWindowShouldClose(window->glfw_window);
 }
 
+void window_set_event_callback(Window* window, WindowEventCallback callback)
+{
+	window->event_callback = callback;
+}
+
+void window_set_mouse_mode(const Window* window, MouseMode mouse_mode)
+{
+	int mode;
+
+	switch (mouse_mode)
+	{
+		case MOUSE_MODE_NORMAL:
+			mode = GLFW_CURSOR_NORMAL;
+			break;
+		case MOUSE_MODE_CAPTURED:
+			mode = GLFW_CURSOR_DISABLED;
+			break;
+		case MOUSE_MODE_HIDDEN:
+			mode = GLFW_CURSOR_HIDDEN;
+			break;
+		default:
+			ASSERT(false, "unknown mouse mode: %d.", mouse_mode);
+			return;
+	}
+
+	glfwSetInputMode(window->glfw_window, GLFW_CURSOR, mode);
+}
+
 void window_get_size(Window* window, int* width, int* height)
 {
 	glfwGetWindowSize(window->glfw_window, width, height);
@@ -144,7 +169,12 @@ bool window_is_mouse_pressed(const Window* window, int button)
 
 void window_get_mouse_pos(const Window* window, double* x, double* y)
 {
-	glfwGetCursorPos(window->glfw_window, x, y);
+	double cx, cy;
+	glfwGetCursorPos(window->glfw_window, &cx, &cy);
+	cursor_pos_to_screen_pos(window, &cx, &cy);
+
+	*x = cx;
+	*y = cy;
 }
 
 static GLFWwindow* create_glfw_window(
@@ -175,6 +205,12 @@ static GLFWwindow* create_glfw_window(
 	
 	if (!window)
 		return NULL;
+	
+	glfwSetWindowCloseCallback(window, close_callback);
+	glfwSetFramebufferSizeCallback(window, resize_callback);
+	glfwSetKeyCallback(window, key_callback);
+	glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 
 	return window;
 }
@@ -184,19 +220,96 @@ static void on_glfw_error(int error, const char* desc)
 	LOG_ERROR("GLFW Error: %i, Info: %s", error, desc);
 }
 
-static void resize_callback(GLFWwindow* window, int width, int height)
+static void close_callback(GLFWwindow* glfw_window)
 {
-	//Window* user_win = (Window*)glfwGetWindowUserPointer(window);
-	// TODO: use callback instead.
-	gfx_fit_viewport(width, height);
+	Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
+
+	WindowEvent event = {
+		.id = CLOSE_EVENT,
+		.data = NULL
+	};
+	
+	window->event_callback(event);
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void resize_callback(GLFWwindow* glfw_window, int width, int height)
 {
-	// TODO: use callback instead.
-	fsm_key_input(key, action, scancode, mods);
+	Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
+	
+	ResizeEventData data = {
+		.width = width,
+		.height = height
+	};
+
+	WindowEvent event = {
+		.id = RESIZE_EVENT,
+		.data = &data
+	};
+	
+	window->event_callback(event);
 }
 
-static void cursor_position_callback(GLFWwindow* window, double x, double y)
+static void key_callback(GLFWwindow* glfw_window, int key, int scancode, int action, int mods)
 {
+	Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
+	
+	KeyEventData data = {
+		.key = key,
+		.scancode = scancode,
+		.action = action,
+		.mods = mods
+	};
+
+	WindowEvent event = {
+		.id = KEY_EVENT,
+		.data = &data
+	};
+	
+	window->event_callback(event);
+}
+
+static void mouse_button_callback(GLFWwindow* glfw_window, int button, int action, int mods)
+{
+	Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
+	
+	MouseButtonEventData data = {
+		.button = button,
+		.action = action,
+		.mods = mods
+	};
+
+	WindowEvent event = {
+		.id = MOUSE_BUTTON_EVENT,
+		.data = &data
+	};
+	
+	window->event_callback(event);
+}
+
+static void cursor_position_callback(GLFWwindow* glfw_window, double x, double y)
+{
+	Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
+	
+	cursor_pos_to_screen_pos(window, &x, &y);
+
+	MouseMoveEventData data = {
+		.x = x,
+		.y = y
+	};
+
+	WindowEvent event = {
+		.id = MOUSE_MOVE_EVENT,
+		.data = &data
+	};
+	
+	window->event_callback(event);
+}
+
+void cursor_pos_to_screen_pos(const Window* window, double* x, double* y)
+{
+	int width, height;
+	glfwGetFramebufferSize(window->glfw_window, &width, &height);
+
+	// flip y.
+	*y = height - *y;
 }

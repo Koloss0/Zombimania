@@ -3,6 +3,8 @@
 #include "core/window.h"
 #include "core/init.h"
 
+#include "gfx/gfx.h"
+
 #include <stdbool.h>
 
 static const Window* window;
@@ -26,6 +28,13 @@ void input_shutdown()
 
 		INIT_STATUS(UNINITIALISED);
 	}
+}
+
+void input_set_mouse_mode(MouseMode mouse_mode)
+{
+	REQUIRE_INIT();
+	
+	window_set_mouse_mode(window, mouse_mode);
 }
 
 bool input_is_key_pressed(int key)

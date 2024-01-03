@@ -31,4 +31,6 @@ static inline double math_rad_to_deg(double rad)
 	return rad * 180.0 / PI;
 }
 
+double math_clamp(double x, double min, double max);
+
 #endif

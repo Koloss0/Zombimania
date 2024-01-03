@@ -1,5 +1,6 @@
 #include "fsm.h"
 #include "init.h"
+#include "window_event.h"
 #include "states/states.h"
 
 #include <stdlib.h>
@@ -17,6 +18,7 @@ static GameStateID next_state;
 		state.exit = namespace##_exit; \
 		state.key_input = namespace##_key_input; \
 		state.mouse_button_input = namespace##_mouse_button_input; \
+		state.mouse_movement_input = namespace##_mouse_movement_input; \
 		 \
 		states[enum_name] = state; \
 	} while(0)
@@ -27,7 +29,7 @@ static GameStateID next_state;
 bool fsm_init(GameStateID initial_state)
 {
 	REQUIRE_UNINIT();
-	init_status = INITIALISED;
+	INIT_STATUS(INITIALISED);
 
 	current_state = NONE;
 
@@ -60,7 +62,7 @@ void fsm_shutdown()
 		DESTROY_STATE(game);
 		// ...
 
-		init_status = UNINITIALISED;
+		INIT_STATUS(UNINITIALISED);
 	}
 }
 
@@ -88,6 +90,13 @@ void fsm_change_state(GameStateID state)
 	}
 }
 
+void fsm_exit()
+{
+	REQUIRE_INIT();
+
+	exit(0);
+}
+
 void fsm_update(double delta)
 {
 	REQUIRE_INIT();
@@ -105,12 +114,36 @@ void fsm_update(double delta)
 	}
 }
 
-void fsm_key_input(int key, int scancode, int action, int mods)
+void fsm_on_window_event(WindowEvent event)
 {
 	REQUIRE_INIT();
 
 	if (current_state != NONE)
 	{
-		states[current_state].key_input(key, scancode, action, mods);
+		GameState* state = &states[current_state];
+
+		switch (event.id)
+		{
+			case KEY_EVENT:
+			{
+				KeyEventData* data = (KeyEventData*)event.data;
+				state->key_input(data->key, data->scancode, data->action, data->mods);
+				break;
+			}
+			case MOUSE_BUTTON_EVENT:
+			{
+				MouseButtonEventData* data = (MouseButtonEventData*)event.data;
+				state->mouse_button_input(data->button, data->action, data->mods);
+				break;
+			}
+			case MOUSE_MOVE_EVENT:
+			{
+				MouseMoveEventData* data = (MouseMoveEventData*)event.data;
+				state->mouse_movement_input(data->x, data->y, data->delta_x, data->delta_y);
+				break;
+			}
+			default:
+				break;
+		}
 	}
 }

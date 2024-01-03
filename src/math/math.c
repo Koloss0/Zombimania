@@ -12,7 +12,7 @@
 int math_init()
 {
 	REQUIRE_UNINIT();
-	init_status = INITIALISED;
+	INIT_STATUS(INITIALISED);
 
 	srand((unsigned int)time(NULL));
 
@@ -21,7 +21,7 @@ int math_init()
 
 void math_shutdown()
 {
-	init_status = UNINITIALISED;
+	INIT_STATUS(UNINITIALISED);
 }
 
 int math_randi(int n)
@@ -84,4 +84,9 @@ double math_dist(double x1, double y1, double x2, double y2)
 	double dy = y2 - y1;
 
 	return sqrt(dx*dx + dy*dy);
+}
+
+double math_clamp(double x, double min, double max)
+{
+    return fmin(max, fmax(x, min));
 }

@@ -12,6 +12,7 @@ bool gfx_init(unsigned int viewport_width, unsigned int viewport_height);
 void gfx_shutdown();
 
 void gfx_fit_viewport(int width, int height);
+bool gfx_screen_pos_to_viewport_pos(double* x, double* y);
 
 void gfx_begin(const Camera* camera);
 void gfx_end();

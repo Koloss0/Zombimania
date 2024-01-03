@@ -4,9 +4,12 @@
 #include "gfx/mesh.h"
 #include "io/bmp.h"
 #include "io/input.h"
+#include "sfx/sfx.h"
+#include "math/math.h"
 #include "config.h"
+
+// standard libraries.
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
 static Mesh* cube;
@@ -18,11 +21,10 @@ static Camera camera = {
 	.rx = 0.0, .ry = 0.0
 };
 
-
 // called once at the start of the program.
 void game_init()
 {
-///////////////////////////////////////////////////
+	///////////////////////////////////////////////////
 	// CREATE A CUBE
 	///////////////////////////////////////////////////
 
@@ -45,12 +47,12 @@ void game_init()
 		{  R, -R,  R, 1.0f, 0.0f },
 		{  R,  R,  R, 1.0f, 1.0f },
 		// right face
-		{ -R,  R, -R, 1.0f, 1.0f },
-		{ -R,  R,  R, 0.0f, 1.0f },
-		{ -R, -R,  R, 0.0f, 0.0f },
-		{ -R, -R,  R, 0.0f, 0.0f },
-		{ -R, -R, -R, 1.0f, 0.0f },
-		{ -R,  R, -R, 1.0f, 1.0f },
+		{  R,  R, -R, 1.0f, 1.0f },
+		{  R,  R,  R, 0.0f, 1.0f },
+		{  R, -R,  R, 0.0f, 0.0f },
+		{  R, -R,  R, 0.0f, 0.0f },
+		{  R, -R, -R, 1.0f, 0.0f },
+		{  R,  R, -R, 1.0f, 1.0f },
 		// back face
 		{ -R,  R, -R, 1.0f, 1.0f },
 		{  R,  R, -R, 0.0f, 1.0f },
@@ -93,16 +95,17 @@ void game_init()
 // called once before the program exits.
 void game_destroy()
 {
-
 	mesh_destroy(cube);
 	shader_destroy(cube_shader);
 	texture_destroy(cube_texture);
-
 }
 
 // called whenever the state is entered.
 void game_enter()
-{}
+{
+	// hide the mouse.
+	input_set_mouse_mode(MOUSE_MODE_CAPTURED);
+}
 
 // called whenever the state exits.
 void game_exit()
@@ -110,7 +113,7 @@ void game_exit()
 
 // called every frame when the state is active.
 void game_update(double delta)
-{	
+{
 	if (input_is_key_pressed(GLFW_KEY_W))
 	{
 		camera.z += 4.0 * delta;
@@ -136,14 +139,24 @@ void game_update(double delta)
 }
 
 // called when a key is either pressed, repeated (held down), or released.
-void game_key_input(int key, int action, int scancode, int mods)
+void game_key_input(int key, int scancode, int action, int mods)
 {
 	if(key == GLFW_KEY_ESCAPE)
 	{
-		exit(0);
+		fsm_change_state(MAIN_MENU);
 	}
 }
 
 // called when a mouse button is pressed or released.
 void game_mouse_button_input(int button, bool pressed, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && pressed)
+	{
+		// gunshot sound by @dklon: https://opengameart.org/content/gunshots-0
+		sfx_play_sound("res/sfx/gunshot_9.wav");
+	}
+}
+
+// called when the mouse moves.
+void game_mouse_movement_input(double x, double y, double delta_x, double delta_y)
 {}

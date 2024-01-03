@@ -41,7 +41,7 @@ static GLuint create_sprites_vbo();
 bool sprite2d_init(unsigned int viewport_width, unsigned int viewport_height)
 {
 	REQUIRE_UNINIT();
-	init_status = INITIALISED;
+	INIT_STATUS(INITIALISED);
 
 	// zero-initialise all state.
 	memset(&state, 0, sizeof(state));
@@ -107,7 +107,7 @@ void sprite2d_shutdown()
 		if (state.texture_atlas.id > 0)
 			texture_destroy(state.texture_atlas);
 
-		init_status = UNINITIALISED;
+		INIT_STATUS(UNINITIALISED);
 	}
 }
 

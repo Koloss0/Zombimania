@@ -4,6 +4,8 @@
 #include "texture_rect.h"
 #include "viewport.h"
 
+#include "math/math.h"
+
 #include "core/assert.h"
 #include "core/init.h"
 #include "core/log.h"
@@ -17,7 +19,7 @@ static const Camera* current_camera = NULL;
 bool gfx_init(unsigned int viewport_width, unsigned int viewport_height)
 {
 	REQUIRE_UNINIT();
-	init_status = INITIALISED;
+	INIT_STATUS(INITIALISED);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -51,7 +53,7 @@ void gfx_shutdown()
 		if (viewport)
 			viewport_destroy(viewport);
 
-		init_status = UNINITIALISED;
+		INIT_STATUS(UNINITIALISED);
 	}
 }
 
@@ -85,6 +87,33 @@ void gfx_fit_viewport(int width, int height)
 		screen_bounds.x = (int)(w*0.5 - new_width*0.5);
 		screen_bounds.y = 0;
 	}
+}
+
+bool gfx_screen_pos_to_viewport_pos(double* x, double* y)
+{
+	double sx = *x;
+	double sy = *y;
+
+	bool inside = false;
+	if (sx >= screen_bounds.x && sx < screen_bounds.x + screen_bounds.w
+	  && sy >= screen_bounds.y && sy < screen_bounds.y + screen_bounds.h)
+	{
+		inside = true;
+	}
+	
+	sx -= (double)screen_bounds.x;
+	sy -= (double)screen_bounds.y;
+
+	sx *= (double)VIEWPORT_WIDTH;
+	sy *= (double)VIEWPORT_HEIGHT;
+
+	sx /= (double)screen_bounds.w;
+	sy /= (double)screen_bounds.h;
+
+	*x = sx;
+	*y = sy;
+
+	return inside;
 }
 
 void gfx_begin(const Camera* camera)

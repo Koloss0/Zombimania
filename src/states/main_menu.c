@@ -6,12 +6,10 @@
 #include "io/input.h"
 #include "config.h"
 #include "sfx/sfx.h"
+
 // standard libraries
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
-
-
 
 static const int NUM_BUTTONS = 3;
 static const int LEFT_PAD = 24; // in px
@@ -93,12 +91,12 @@ void mm_init()
 		{  R, -R,  R, 1.0f, 0.0f },
 		{  R,  R,  R, 1.0f, 1.0f },
 		// right face
-		{ -R,  R, -R, 1.0f, 1.0f },
-		{ -R,  R,  R, 0.0f, 1.0f },
-		{ -R, -R,  R, 0.0f, 0.0f },
-		{ -R, -R,  R, 0.0f, 0.0f },
-		{ -R, -R, -R, 1.0f, 0.0f },
-		{ -R,  R, -R, 1.0f, 1.0f },
+		{  R,  R, -R, 1.0f, 1.0f },
+		{  R,  R,  R, 0.0f, 1.0f },
+		{  R, -R,  R, 0.0f, 0.0f },
+		{  R, -R,  R, 0.0f, 0.0f },
+		{  R, -R, -R, 1.0f, 0.0f },
+		{  R,  R, -R, 1.0f, 1.0f },
 		// back face
 		{ -R,  R, -R, 1.0f, 1.0f },
 		{  R,  R, -R, 0.0f, 1.0f },
@@ -137,7 +135,8 @@ void mm_init()
 
 	cube = mesh_create(vertices, NUM_VERTS, cube_texture, cube_shader);
 
-	sfx_play_sound("res/sfx/titlescreen.mp3");
+	// music by @dAmbient: https://freesound.org/people/dAmbient/sounds/251936/
+	//sfx_play_sound("res/sfx/titlescreen.mp3");
 }
 
 // called once before the program exits.
@@ -153,7 +152,9 @@ void mm_destroy()
 
 // called whenever the state is entered.
 void mm_enter()
-{}
+{
+	input_set_mouse_mode(MOUSE_MODE_NORMAL);
+}
 
 // called whenever the state exits.
 void mm_exit()
@@ -189,7 +190,7 @@ void mm_update(double delta)
 }
 
 // called when a key is either pressed, repeated (held down), or released.
-void mm_key_input(int key, int action, int scancode, int mods)
+void mm_key_input(int key, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
@@ -221,6 +222,10 @@ void mm_key_input(int key, int action, int scancode, int mods)
 void mm_mouse_button_input(int button, bool pressed, int mods)
 {}
 
+// called when the mouse moves.
+void mm_mouse_movement_input(double x, double y, double delta_x, double delta_y)
+{}
+
 static void on_settings_pressed()
 {
 	fsm_change_state(SETTINGS);
@@ -233,5 +238,5 @@ static void on_play_pressed()
 
 static void on_quit_pressed()
 {
-	exit(0);
+	fsm_exit();
 }

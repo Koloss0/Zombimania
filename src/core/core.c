@@ -11,14 +11,16 @@
 
 #include <stdbool.h>
 
-static void display_splash_text();
-
 static Window* window = NULL;
+static bool running = false;
+
+static void on_window_event(WindowEvent event);
+static void display_splash_text();
 
 bool core_init()
 {
 	REQUIRE_UNINIT();
-	init_status = INITIALISED;
+	INIT_STATUS(INITIALISED);
 
 	if (!math_init())
 	{
@@ -34,6 +36,7 @@ bool core_init()
 		core_shutdown();
 		return false;
 	}
+	window_set_event_callback(window, on_window_event);
 
 	if (!gfx_init((unsigned)VIEWPORT_WIDTH, (unsigned)VIEWPORT_HEIGHT))
 	{
@@ -71,6 +74,8 @@ bool core_init()
 
 	display_splash_text();
 
+	running = true;
+
 	return true;
 }
 
@@ -78,17 +83,16 @@ void core_shutdown()
 {
 	if (init_status == INITIALISED)
 	{
+		running = false;
 		fsm_shutdown();
 		sfx_shutdown();
 		input_shutdown();
 		gfx_shutdown();
-
 		if (window)
 			window_destroy(window);
-		
 		math_shutdown();
 
-		init_status = UNINITIALISED;
+		INIT_STATUS(UNINITIALISED);
 	}
 }
 
@@ -100,7 +104,7 @@ void core_run()
 	double delta = 0.0;
 	double last_frame_time = 0.0;
 
-	while (!window_should_close(window))
+	while (running)
 	{
 		double time = glfwGetTime();
 		delta = time - last_frame_time;
@@ -109,6 +113,28 @@ void core_run()
 		fsm_update(delta);
 		window_update(window);
 	}
+}
+
+static void on_window_event(WindowEvent event)
+{
+	switch (event.id)
+	{
+		case CLOSE_EVENT:
+		{
+			running = false;
+			break;
+		}
+		case RESIZE_EVENT:
+		{
+			ResizeEventData* data = (ResizeEventData*)event.data;
+			gfx_fit_viewport(data->width, data->height);
+			break;
+		}
+		default:
+			break;
+	}
+
+	fsm_on_window_event(event);
 }
 
 static void display_splash_text()

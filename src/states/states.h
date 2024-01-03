@@ -9,8 +9,9 @@ typedef struct
 	void (*enter)();
 	void (*update)(double delta);
 	void (*exit)();
-	void (*key_input)(int key, int action, int scancode, int mods);
+	void (*key_input)(int key, int scancode, int action, int mods);
 	void (*mouse_button_input)(int button, bool pressed, int mods);
+	void (*mouse_movement_input)(double x, double y, double delta_x, double delta_y);
 } GameState;
 
 #define GAME_STATE_INTERFACE(namespace) \
@@ -19,8 +20,9 @@ typedef struct
 	void namespace##_enter(); \
 	void namespace##_exit(); \
 	void namespace##_update(double delta); \
-	void namespace##_key_input(int key, int action, int scancode, int mods); \
-	void namespace##_mouse_button_input(int button, bool pressed, int mods)
+	void namespace##_key_input(int key, int scancode, int action, int mods); \
+	void namespace##_mouse_button_input(int button, bool pressed, int mods); \
+	void namespace##_mouse_movement_input(double x, double y, double delta_x, double delta_y)
 
 #define NUM_STATES 3
 

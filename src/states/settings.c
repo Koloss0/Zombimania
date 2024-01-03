@@ -78,7 +78,7 @@ void settings_update(double delta)
 }
 
 // called when a key is either pressed, repeated (held down), or released.
-void settings_key_input(int key, int action, int scancode, int mods)
+void settings_key_input(int key, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
@@ -108,6 +108,10 @@ void settings_key_input(int key, int action, int scancode, int mods)
 
 // called when a mouse button is pressed or released.
 void settings_mouse_button_input(int button, bool pressed, int mods)
+{}
+
+// called when the mouse moves.
+void settings_mouse_movement_input(double x, double y, double delta_x, double delta_y)
 {}
 
 void on_back_pressed()
