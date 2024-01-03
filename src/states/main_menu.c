@@ -48,15 +48,6 @@ static Button buttons[] = {
 	}
 };
 
-static Mesh* cube;
-static Texture cube_texture;
-static Shader cube_shader;
-
-static Camera camera = {
-	.x = 0.0, .y = 0.0, .z = 0.0,
-	.rx = 0.0, .ry = 0.0
-};
-
 // called once at the start of the program.
 void mm_init()
 {
@@ -68,87 +59,13 @@ void mm_init()
 
 	selected_button = 0;
 
-	///////////////////////////////////////////////////
-	// CREATE A CUBE
-	///////////////////////////////////////////////////
-
-	// define an array of vertices where every three points draw a triangle.
-	const float R = 1.0f;
-	MeshVertex vertices[] = {
-		// x   y   z    u     v
-		// left face
-		{ -R,  R,  R, 1.0f, 1.0f },
-		{ -R,  R, -R, 0.0f, 1.0f },
-		{ -R, -R, -R, 0.0f, 0.0f },
-		{ -R, -R, -R, 0.0f, 0.0f },
-		{ -R, -R,  R, 1.0f, 0.0f },
-		{ -R,  R,  R, 1.0f, 1.0f },
-		// front face
-		{  R,  R,  R, 1.0f, 1.0f },
-		{ -R,  R,  R, 0.0f, 1.0f },
-		{ -R, -R,  R, 0.0f, 0.0f },
-		{ -R, -R,  R, 0.0f, 0.0f },
-		{  R, -R,  R, 1.0f, 0.0f },
-		{  R,  R,  R, 1.0f, 1.0f },
-		// right face
-		{  R,  R, -R, 1.0f, 1.0f },
-		{  R,  R,  R, 0.0f, 1.0f },
-		{  R, -R,  R, 0.0f, 0.0f },
-		{  R, -R,  R, 0.0f, 0.0f },
-		{  R, -R, -R, 1.0f, 0.0f },
-		{  R,  R, -R, 1.0f, 1.0f },
-		// back face
-		{ -R,  R, -R, 1.0f, 1.0f },
-		{  R,  R, -R, 0.0f, 1.0f },
-		{  R, -R, -R, 0.0f, 0.0f },
-		{  R, -R, -R, 0.0f, 0.0f },
-		{ -R, -R, -R, 1.0f, 0.0f },
-		{ -R,  R, -R, 1.0f, 1.0f },
-		// top face
-		{  R,  R, -R, 1.0f, 1.0f },
-		{ -R,  R, -R, 0.0f, 1.0f },
-		{ -R,  R,  R, 0.0f, 0.0f },
-		{ -R,  R,  R, 0.0f, 0.0f },
-		{  R,  R,  R, 1.0f, 0.0f },
-		{  R,  R, -R, 1.0f, 1.0f },
-		// bottom face
-		{  R, -R,  R, 1.0f, 1.0f },
-		{ -R, -R,  R, 0.0f, 1.0f },
-		{ -R, -R, -R, 0.0f, 0.0f },
-		{ -R, -R, -R, 0.0f, 0.0f },
-		{  R, -R, -R, 1.0f, 0.0f },
-		{  R, -R,  R, 1.0f, 1.0f },
-	};
-	const size_t NUM_VERTS = sizeof(vertices) / sizeof(MeshVertex);
-
-	// load an image for the texture.
-	Image img = io_load_bmp("res/images/cube.bmp", false);
-
-	// load image into a new texture.
-	cube_texture = texture_create(img, NULL); // NULL for default settings.
-
-	// delete the image. (or else you get a resource leak)
-	image_destroy(img);
-
-	// create a shader. (every mesh needs one)
-	cube_shader = shader_create("res/shaders/cube.shader");
-
-	cube = mesh_create(vertices, NUM_VERTS, cube_texture, cube_shader);
-
 	// music by @dAmbient: https://freesound.org/people/dAmbient/sounds/251936/
 	//sfx_play_sound("res/sfx/titlescreen.mp3");
 }
 
 // called once before the program exits.
 void mm_destroy()
-{
-	// don't forget to clean up. (despite nothing bad will happen if you don't)
-
-	// in no particular order...
-	mesh_destroy(cube);
-	shader_destroy(cube_shader);
-	texture_destroy(cube_texture);
-}
+{}
 
 // called whenever the state is entered.
 void mm_enter()
@@ -163,19 +80,8 @@ void mm_exit()
 // called every frame when the state is active.
 void mm_update(double delta)
 {
-	// input processing goes here.
-	if (input_is_key_pressed(GLFW_KEY_W))
-	{
-		camera.z += 4.0 * delta;
-	}
-	else if (input_is_key_pressed(GLFW_KEY_S))
-	{
-		camera.z -= 4.0 * delta;
-	}
-
-	gfx_begin(&camera);
+	gfx_begin(&CAMERA_DEFAULT);
 	gfx_background(0.11f, 0.11f, 0.11f);
-	gfx_mesh(cube);
 	gfx_sprite2d(160,190,0,0, (TextureRect){0, 48, 197, 20}); // zombimania
 	
 	for(int i = 0; i < NUM_BUTTONS; i++)

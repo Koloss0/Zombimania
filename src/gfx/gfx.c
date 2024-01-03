@@ -104,8 +104,8 @@ bool gfx_screen_pos_to_viewport_pos(double* x, double* y)
 	sx -= (double)screen_bounds.x;
 	sy -= (double)screen_bounds.y;
 
-	sx *= (double)VIEWPORT_WIDTH;
-	sy *= (double)VIEWPORT_HEIGHT;
+	sx *= (double)viewport->width;
+	sy *= (double)viewport->height;
 
 	sx /= (double)screen_bounds.w;
 	sy /= (double)screen_bounds.h;
@@ -121,8 +121,6 @@ void gfx_begin(const Camera* camera)
 	REQUIRE_INIT();
 
 	current_camera = camera;
-
-	glClearDepth(1.0f);
 
 	// render to viewport.
 	viewport_bind(viewport);
@@ -160,7 +158,7 @@ void gfx_background(float r, float g, float b)
 	REQUIRE_INIT();
 
 	glClearColor(r, g, b, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void gfx_sprite2d(int x, int y, int width, int height, TextureRect texture_rect)

@@ -7,6 +7,7 @@
 typedef struct
 {
 	GLuint id;
+	GLuint depth_buffer_id;
 } Framebuffer;
 
 Framebuffer framebuffer_create(Texture texture);

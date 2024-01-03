@@ -119,8 +119,8 @@ void mesh_draw(Mesh* mesh)
 	texture_bind(mesh->texture);
 	shader_use(mesh->shader);
 
-	mat4_rotate_y(&mesh->model_mat, 0.0006); // FIXME
-	shader_set_mat4(mesh->shader, "model", &mesh->model_mat);
+	//mat4_rotate_y(&mesh->model_mat, 0.0006);
+	//shader_set_mat4(mesh->shader, "model", &mesh->model_mat);
 
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh->size);
 
