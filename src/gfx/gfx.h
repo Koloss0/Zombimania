@@ -20,6 +20,7 @@ void gfx_flush();
 
 void gfx_background(float r, float g, float b);
 void gfx_sprite2d(int x, int y, int width, int height, TextureRect texture_rect);
+void gfx_sprite3d(double x, double y, double z, double width, double height, TextureRect texture_rect);
 void gfx_mesh(Mesh* mesh);
 
 #endif

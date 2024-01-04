@@ -7,6 +7,7 @@ typedef struct
 {
 	double x, y, z;
 	double rx, ry;
+	Mat4 transform;
 	Mat4 view_mat;
 } Camera;
 

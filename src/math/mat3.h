@@ -9,9 +9,9 @@ typedef union
 
 	struct
 	{
-		float m00, m01, m02,
-		      m10, m11, m12,
-		      m20, m21, m22;
+		float right_x, right_y, zero_0,
+		      up_x,    up_y,    zero_1,
+		      x,       y,       z;
 	};
 } Mat3;
 

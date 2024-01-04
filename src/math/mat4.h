@@ -9,9 +9,9 @@ typedef union
 
 	struct
 	{
-		float x_basis_x, x_basis_y, x_basis_z, zero_0,
-		      y_basis_x, y_basis_y, y_basis_z, zero_1,
-		      z_basis_x, z_basis_y, z_basis_z, zero_2,
+		float right_x,   right_y,   right_z,   zero_0,
+		      up_x,      up_y,      up_z,      zero_1,
+		      forward_x, forward_y, forward_z, zero_2,
 		      x,         y,         z,         w;
 	};
 } Mat4;

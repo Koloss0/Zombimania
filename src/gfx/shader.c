@@ -249,21 +249,42 @@ void shader_use(const Shader shader)
 
 void shader_set_int(const Shader shader, const char* name, GLint value)
 {
-	GLint int_uniform;
-	GL_CMD(int_uniform = glGetUniformLocation(shader.id, name));
-	GL_CMD(glUniform1i(int_uniform, value));
+	GLint uniform;
+	GL_CMD(uniform = glGetUniformLocation(shader.id, name));
+	GL_CMD(glUniform1i(uniform, value));
+}
+
+void shader_set_vec2(const Shader shader, const char* name, float x, float y)
+{
+	GLint uniform;
+	GL_CMD(uniform = glGetUniformLocation(shader.id, name));
+	GL_CMD(glUniform2f(uniform, x, y));
+}
+
+void shader_set_vec3(const Shader shader, const char* name, float x, float y, float z)
+{
+	GLint uniform;
+	GL_CMD(uniform = glGetUniformLocation(shader.id, name));
+	GL_CMD(glUniform3f(uniform, x, y, z));
+}
+
+void shader_set_vec4(const Shader shader, const char* name, float x, float y, float z, float w)
+{
+	GLint uniform;
+	GL_CMD(uniform = glGetUniformLocation(shader.id, name));
+	GL_CMD(glUniform4f(uniform, x, y, z, w));
 }
 
 void shader_set_mat3(const Shader shader, const char* name, const Mat3* mat3)
 {
-	GLint mat_uniform;
-	GL_CMD(mat_uniform = glGetUniformLocation(shader.id, name));
-	GL_CMD(glUniformMatrix3fv(mat_uniform, 1, GL_FALSE, mat3->entries));
+	GLint uniform;
+	GL_CMD(uniform = glGetUniformLocation(shader.id, name));
+	GL_CMD(glUniformMatrix3fv(uniform, 1, GL_FALSE, mat3->entries));
 }
 
 void shader_set_mat4(const Shader shader, const char* name, const Mat4* mat4)
 {
-	GLint mat_uniform;
-	GL_CMD(mat_uniform = glGetUniformLocation(shader.id, name));
-	GL_CMD(glUniformMatrix4fv(mat_uniform, 1, GL_FALSE, mat4->entries));
+	GLint uniform;
+	GL_CMD(uniform = glGetUniformLocation(shader.id, name));
+	GL_CMD(glUniformMatrix4fv(uniform, 1, GL_FALSE, mat4->entries));
 }

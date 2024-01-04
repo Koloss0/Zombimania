@@ -5,6 +5,7 @@
 const Camera CAMERA_DEFAULT = {
 	.x = 0.0, .y = 0.0, .z = 0.0,
 	.rx = 0.0, .ry = 0.0,
+	.transform = MAT4_IDENTITY,
 	.view_mat = MAT4_IDENTITY
 };
 
@@ -16,6 +17,10 @@ void camera_set_translation(Camera* camera, double x, double y, double z)
 
 	camera->view_mat = mat4_translation(-x, -y, -z);
 	camera->view_mat = mat4_mult(&rotation, &camera->view_mat);
+
+	camera->transform.x = (float)x;
+	camera->transform.y = (float)y;
+	camera->transform.z = (float)z;
 
 	camera->x = x;
 	camera->y = y;
@@ -35,6 +40,14 @@ void camera_set_rotation(Camera* camera, double x, double y)
 
 	camera->view_mat = mat4_translation(-camera->x, -camera->y, -camera->z);
 	camera->view_mat = mat4_mult(&rotation, &camera->view_mat);
+
+	camera->transform = (Mat4)MAT4_IDENTITY;
+	mat4_rotate_x(&camera->transform, x);
+	mat4_rotate_y(&camera->transform, y);
+	
+	camera->transform.x = (float)camera->x;
+	camera->transform.y = (float)camera->y;
+	camera->transform.z = (float)camera->z;
 
 	camera->rx = x;
 	camera->ry = y;

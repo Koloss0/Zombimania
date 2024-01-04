@@ -17,13 +17,11 @@ static Texture cube_texture;
 static Shader cube_shader;
 
 static Camera camera;
-static double time;
 
 // called once at the start of the program.
 void game_init()
 {
 	camera = CAMERA_DEFAULT;
-	time = 0.0;
 
 	///////////////////////////////////////////////////
 	// CREATE A CUBE
@@ -131,12 +129,14 @@ void game_update(double delta)
 	{
 		camera_translate(&camera, 4.0 * delta, 0.0, 0.0);
 	}
-
-	time += delta;
-
+/*
+	if (frame % 2000 == 0)
+		printf("camera transform:\nX: %f, %f, %f\nY: %f, %f, %f\nZ: %f, %f, %f\n", camera.transform.right_x, camera.transform.right_y, camera.transform.right_z, camera.transform.up_x, camera.transform.up_y, camera.transform.up_z, camera.transform.forward_x, camera.transform.forward_y, camera.transform.forward_z);
+*/
 	gfx_begin(&camera);
 	gfx_background(0.2f, 0.2f, 0.2f);
 	gfx_mesh(cube);
+	gfx_sprite3d(0.0, 0.0, -2.0, 2.0, 2.0, (TextureRect){0, 0, 64, 64});
 	gfx_sprite2d(VIEWPORT_WIDTH/2,20,40,60,(TextureRect){85,69,20,23});//gunhand
 	gfx_end();
 }

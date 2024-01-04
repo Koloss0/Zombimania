@@ -1,5 +1,6 @@
 #include "gfx.h"
 #include "sprite2d.h"
+#include "sprite3d.h"
 #include "camera.h"
 #include "texture_rect.h"
 #include "viewport.h"
@@ -41,6 +42,13 @@ bool gfx_init(unsigned int viewport_width, unsigned int viewport_height)
 		return false;
 	}
 
+	if (!sprite3d_init((unsigned)viewport_width, (unsigned)viewport_height))
+	{
+		LOG_ERROR("failed to initialise GFX: failed to initialise Sprite3D.");
+		gfx_shutdown();
+		return false;
+	}
+
 	return true;
 }
 
@@ -48,6 +56,7 @@ void gfx_shutdown()
 {
 	if (init_status == INITIALISED)
 	{
+		sprite3d_shutdown();
 		sprite2d_shutdown();
 
 		if (viewport)
@@ -126,6 +135,7 @@ void gfx_begin(const Camera* camera)
 	viewport_bind(viewport);
 
 	sprite2d_begin();
+	sprite3d_begin(camera);
 }
 
 void gfx_end()
@@ -133,6 +143,7 @@ void gfx_end()
 	REQUIRE_INIT();
 
 	gfx_flush();
+	sprite3d_end();
 	sprite2d_end();
 
 	// return to normal rendering.
@@ -150,6 +161,7 @@ void gfx_flush()
 {
 	REQUIRE_INIT();
 
+	sprite3d_flush();
 	sprite2d_flush();
 }
 
@@ -166,6 +178,13 @@ void gfx_sprite2d(int x, int y, int width, int height, TextureRect texture_rect)
 	REQUIRE_INIT();
 
 	sprite2d_draw(x, y, width, height, texture_rect);
+}
+
+void gfx_sprite3d(double x, double y, double z, double width, double height, TextureRect texture_rect)
+{
+	REQUIRE_INIT();
+
+	sprite3d_draw(x, y, z, width, height, texture_rect);
 }
 
 void gfx_mesh(Mesh* mesh)

@@ -125,9 +125,9 @@ Mat4 mat4_mult(Mat4* m1, Mat4* m2)
 
 void mat4_rotate_y(Mat4* mat, double rad)
 {
-	math_rotatef(&mat->x_basis_z, &mat->x_basis_x, rad);
-	math_rotatef(&mat->y_basis_z, &mat->y_basis_x, rad);
-	math_rotatef(&mat->z_basis_z, &mat->z_basis_x, rad);
+	math_rotatef(&mat->right_z, &mat->right_x, rad);
+	math_rotatef(&mat->up_z, &mat->up_x, rad);
+	math_rotatef(&mat->forward_z, &mat->forward_x, rad);
 
 	// ( 0, -1) -> ( 1,  0)
 	// (-1,  0) -> ( 0, -1)
@@ -137,7 +137,7 @@ void mat4_rotate_y(Mat4* mat, double rad)
 
 void mat4_rotate_x(Mat4* mat, double rad)
 {
-	math_rotatef(&mat->x_basis_y, &mat->x_basis_z, rad);
-	math_rotatef(&mat->y_basis_y, &mat->y_basis_z, rad);
-	math_rotatef(&mat->z_basis_y, &mat->z_basis_z, rad);
+	math_rotatef(&mat->right_y, &mat->right_z, rad);
+	math_rotatef(&mat->up_y, &mat->up_z, rad);
+	math_rotatef(&mat->forward_y, &mat->forward_z, rad);
 }

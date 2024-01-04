@@ -6,6 +6,7 @@ target_sources(zombimania PRIVATE
 	mesh.c
 	shader.c
 	sprite2d.c
+	sprite3d.c
 	texture.c
 	viewport.c
 )
