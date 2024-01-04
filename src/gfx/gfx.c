@@ -25,8 +25,6 @@ bool gfx_init(unsigned int viewport_width, unsigned int viewport_height)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnable(GL_DEPTH_TEST);
-
 	viewport = viewport_create((unsigned)viewport_width, (unsigned)viewport_height);
 	if (!viewport)
 	{
@@ -142,9 +140,10 @@ void gfx_end()
 {
 	REQUIRE_INIT();
 
-	gfx_flush();
 	sprite3d_end();
 	sprite2d_end();
+
+	glDisable(GL_DEPTH_TEST);
 
 	// return to normal rendering.
 	viewport_unbind();
@@ -152,7 +151,7 @@ void gfx_end()
 
 	// black bars.
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	viewport_draw(viewport);
 }

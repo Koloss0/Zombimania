@@ -122,6 +122,8 @@ void mesh_draw(Mesh* mesh)
 	//mat4_rotate_y(&mesh->model_mat, 0.0006);
 	//shader_set_mat4(mesh->shader, "model", &mesh->model_mat);
 
+	glEnable(GL_DEPTH_TEST);
+
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh->size);
 
 	GL_CMD(glBindVertexArray(0));

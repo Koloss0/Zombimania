@@ -65,6 +65,9 @@ void settings_update(double delta)
 
 	gfx_background(0.11f, 0.11f, 0.11f);
 
+	// background image.
+	gfx_sprite2d(VIEWPORT_WIDTH/2, VIEWPORT_HEIGHT/2, 0, 0, (TextureRect){198, 0, 320, 200});
+
 	gfx_sprite2d(160,190,0,0, (TextureRect){0, 48, 197, 20}); // zombimania
 	
 	for(int i = 0; i < NUM_BUTTONS; i++)

@@ -187,6 +187,8 @@ void sprite2d_flush()
 	glBufferSubData(GL_ARRAY_BUFFER, 0,
 			(GLsizeiptr)(state.sprites_size * sizeof(Sprite2D)), state.sprites);
 
+	glDisable(GL_DEPTH_TEST);
+
 	// instanced draw call
 	GL_CMD(glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, (GLsizei)state.sprites_size));
 
