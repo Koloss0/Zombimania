@@ -33,4 +33,7 @@ static inline double math_rad_to_deg(double rad)
 
 double math_clamp(double x, double min, double max);
 
+void math_rotate(double* x, double* y, double rad);
+void math_rotatef(float* x, float* y, double rad);
+
 #endif

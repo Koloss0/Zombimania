@@ -31,7 +31,7 @@ void window_update(Window* window);
 bool window_should_close(Window* window);
 
 void window_set_event_callback(Window* window, WindowEventCallback callback);
-void window_set_mouse_mode(const Window* window, MouseMode mouse_mode);
+void window_set_mouse_mode(Window* window, MouseMode mouse_mode);
 
 void window_get_size(Window* window, int* width, int* height);
 

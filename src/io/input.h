@@ -5,7 +5,7 @@
 
 #include <stdbool.h>
 
-bool input_init(const Window* window);
+bool input_init(Window* window);
 void input_shutdown();
 
 void input_set_mouse_mode(MouseMode mouse_mode);

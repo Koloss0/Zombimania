@@ -54,10 +54,10 @@ Mesh* mesh_create(MeshVertex* vertices, size_t num_verts, Texture texture, Shade
 	shader_set_int(shader, "textureImage", 0);
 
 	Mat4 model_mat = MAT4_IDENTITY;
-	model_mat.z = -6.0f;
+	const Mat4 view_mat = MAT4_IDENTITY;
 	Mat4 projection = mat4_perspective(70.0, 1.6, 0.1, 20.0); // FIXME: shouldn't be here.
 	shader_set_mat4(shader, "model", &model_mat);
-	shader_set_mat4(shader, "view", &MAT4_IDENTITY);
+	shader_set_mat4(shader, "view", &view_mat);
 	shader_set_mat4(shader, "projection", &projection);
 	mesh->model_mat = model_mat;
 

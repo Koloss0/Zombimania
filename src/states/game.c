@@ -16,14 +16,15 @@ static Mesh* cube;
 static Texture cube_texture;
 static Shader cube_shader;
 
-static Camera camera = {
-	.x = 0.0, .y = 0.0, .z = 0.0,
-	.rx = 0.0, .ry = 0.0
-};
+static Camera camera;
+static double time;
 
 // called once at the start of the program.
 void game_init()
 {
+	camera = CAMERA_DEFAULT;
+	time = 0.0;
+
 	///////////////////////////////////////////////////
 	// CREATE A CUBE
 	///////////////////////////////////////////////////
@@ -116,20 +117,22 @@ void game_update(double delta)
 {
 	if (input_is_key_pressed(GLFW_KEY_W))
 	{
-		camera.z += 4.0 * delta;
+		camera_translate(&camera, 0.0, 0.0, -4.0 * delta);
 	}
-	 if (input_is_key_pressed(GLFW_KEY_S))
+	if (input_is_key_pressed(GLFW_KEY_S))
 	{
-		camera.z -= 4.0 * delta;
+		camera_translate(&camera, 0.0, 0.0, 4.0 * delta);
 	}
 	 if (input_is_key_pressed(GLFW_KEY_A))
 	{
-		camera.x += 4.0 * delta;
+		camera_translate(&camera, -4.0 * delta, 0.0, 0.0);
 	}
 	 if (input_is_key_pressed(GLFW_KEY_D))
 	{
-		camera.x -= 4.0 * delta;
+		camera_translate(&camera, 4.0 * delta, 0.0, 0.0);
 	}
+
+	time += delta;
 
 	gfx_begin(&camera);
 	gfx_background(0.2f, 0.2f, 0.2f);
@@ -159,4 +162,6 @@ void game_mouse_button_input(int button, bool pressed, int mods)
 
 // called when the mouse moves.
 void game_mouse_movement_input(double x, double y, double delta_x, double delta_y)
-{}
+{
+	camera_rotate(&camera, 0.001*delta_y, 0.001*delta_x);
+}

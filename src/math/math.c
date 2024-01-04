@@ -90,3 +90,26 @@ double math_clamp(double x, double min, double max)
 {
     return fmin(max, fmax(x, min));
 }
+
+void math_rotate(double* x, double* y, double rad)
+{
+	double px = *x;
+	double py = *y;
+
+	double c = cos(rad);
+	double s = sin(rad);
+
+	*x = px*c - py*s;
+	*y = py*c + px*s;
+}
+
+void math_rotatef(float* x, float* y, double rad)
+{
+	double px = *x;
+	double py = *y;
+
+	math_rotate(&px, &py, rad);
+
+	*x = (float)px;
+	*y = (float)py;
+}

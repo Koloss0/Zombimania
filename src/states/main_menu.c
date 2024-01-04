@@ -6,6 +6,7 @@
 #include "io/input.h"
 #include "config.h"
 #include "sfx/sfx.h"
+#include "math/math.h"
 
 // standard libraries
 #include <stdio.h>

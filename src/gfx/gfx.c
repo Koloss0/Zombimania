@@ -174,12 +174,7 @@ void gfx_mesh(Mesh* mesh)
 
 	shader_use(shader);
 
-	Mat4 view = MAT4_IDENTITY;
-	view.x = (float)current_camera->x;
-	view.y = (float)current_camera->y;
-	view.z = (float)current_camera->z;
-
-	shader_set_mat4(shader, "view", &view);
+	shader_set_mat4(shader, "view", &current_camera->view_mat);
 
 	mesh_draw(mesh);
 }

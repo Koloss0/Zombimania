@@ -8,10 +8,18 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+typedef struct
+{
+	double x, y;
+} MousePos;
+
 struct Window
 {
 	GLFWwindow* glfw_window;
 	WindowEventCallback event_callback;
+
+	MousePos prev_mouse_pos;
+	MousePos mouse_pos;
 };
 
 static unsigned int num_windows = 0;
@@ -26,6 +34,7 @@ static void key_callback(GLFWwindow* glfw_window, int key, int scancode, int act
 static void mouse_button_callback(GLFWwindow* glfw_window, int button, int action, int mods);
 static void cursor_position_callback(GLFWwindow* glfw_window, double x, double y);
 static void cursor_pos_to_screen_pos(const Window* window, double* x, double* y);
+static void reset_mouse_pos(Window* window);
 
 Window* window_create(const WindowSettings* window_settings)
 {
@@ -95,6 +104,8 @@ Window* window_create(const WindowSettings* window_settings)
 		glfwSwapInterval(1);
 	}
 
+	reset_mouse_pos(window);
+
 	num_windows++;
 
 	return window;
@@ -129,7 +140,7 @@ void window_set_event_callback(Window* window, WindowEventCallback callback)
 	window->event_callback = callback;
 }
 
-void window_set_mouse_mode(const Window* window, MouseMode mouse_mode)
+void window_set_mouse_mode(Window* window, MouseMode mouse_mode)
 {
 	int mode;
 
@@ -150,6 +161,7 @@ void window_set_mouse_mode(const Window* window, MouseMode mouse_mode)
 	}
 
 	glfwSetInputMode(window->glfw_window, GLFW_CURSOR, mode);
+	reset_mouse_pos(window);
 }
 
 void window_get_size(Window* window, int* width, int* height)
@@ -289,12 +301,18 @@ static void mouse_button_callback(GLFWwindow* glfw_window, int button, int actio
 static void cursor_position_callback(GLFWwindow* glfw_window, double x, double y)
 {
 	Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
-	
+
 	cursor_pos_to_screen_pos(window, &x, &y);
+	
+	window->prev_mouse_pos = window->mouse_pos;
+	window->mouse_pos.x = x;
+	window->mouse_pos.y = y;
 
 	MouseMoveEventData data = {
 		.x = x,
-		.y = y
+		.y = y,
+		.delta_x = x - window->prev_mouse_pos.x,
+		.delta_y = y - window->prev_mouse_pos.y,
 	};
 
 	WindowEvent event = {
@@ -312,4 +330,12 @@ void cursor_pos_to_screen_pos(const Window* window, double* x, double* y)
 
 	// flip y.
 	*y = height - *y;
+}
+
+static void reset_mouse_pos(Window* window)
+{
+	MousePos pos = { 0.0, 0.0 };
+	window_get_mouse_pos(window, &pos.x, &pos.y);
+	window->prev_mouse_pos = pos;
+	window->mouse_pos = pos;
 }

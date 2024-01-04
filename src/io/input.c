@@ -7,9 +7,9 @@
 
 #include <stdbool.h>
 
-static const Window* window;
+static Window* window;
 
-bool input_init(const Window* win)
+bool input_init(Window* win)
 {
 	ASSERT(win, "window must be defined");
 
