@@ -60,8 +60,8 @@ void mm_init()
 
 	selected_button = 0;
 
-	// music by @dAmbient: https://freesound.org/people/dAmbient/sounds/251936/
-	//sfx_play_sound("res/sfx/titlescreen.mp3");
+	// music by @Zander Noriega: https://opengameart.org/content/perpetual-tension
+	sfx_play_sound("res/sfx/Zander Noriega - Perpetual Tension.wav");
 }
 
 // called once before the program exits.
@@ -84,7 +84,9 @@ void mm_update(double delta)
 	gfx_begin(&CAMERA_DEFAULT);
 	gfx_background(0.11f, 0.11f, 0.11f);
 
+	// background image.
 	gfx_sprite2d(VIEWPORT_WIDTH/2, VIEWPORT_HEIGHT/2, 0, 0, (TextureRect){198, 0, 320, 200});
+
 	gfx_sprite2d(160,190,0,0, (TextureRect){0, 48, 197, 20}); // zombimania
 	
 	for(int i = 0; i < NUM_BUTTONS; i++)
@@ -108,6 +110,9 @@ void mm_key_input(int key, int scancode, int action, int mods)
 			selected_button--;
 			if(selected_button < 0)
 				selected_button = 0;
+			else
+				// ui click by @Erokia: https://freesound.org/people/Erokia/sounds/470451/
+				sfx_play_sound("res/sfx/freesound_erokia_menu_ui_click_203.wav");
 		}
 
 		if(key == GLFW_KEY_DOWN)
@@ -115,6 +120,9 @@ void mm_key_input(int key, int scancode, int action, int mods)
 			selected_button++;
 			if(selected_button >= NUM_BUTTONS)
 				selected_button = NUM_BUTTONS - 1;
+			else
+				// ui click by @Erokia: https://freesound.org/people/Erokia/sounds/470451/
+				sfx_play_sound("res/sfx/freesound_erokia_menu_ui_click_203.wav");
 		}
 	}
 
@@ -123,6 +131,8 @@ void mm_key_input(int key, int scancode, int action, int mods)
 		if(key == GLFW_KEY_ENTER)
 		{
 			buttons[selected_button].callback_function();
+			// ui press by @Nightflame: https://freesound.org/people/Nightflame/sounds/422516/
+			sfx_play_sound("res/sfx/freesound_nightflame_menu_fx_03_ascending.wav");
 		}
 	}
 }
