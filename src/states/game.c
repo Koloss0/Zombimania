@@ -157,11 +157,13 @@ void game_mouse_button_input(int button, bool pressed, int mods)
 	{
 		// gunshot sound by @dklon: https://opengameart.org/content/gunshots-0
 		sfx_play_sound("res/sfx/gunshot_9.wav");
+		gfx_sprite2d((VIEWPORT_WIDTH/2)-5,50,20,20,(TextureRect){3,92,24,14});//muzzle flash NEEDS TO FIX ON FRAMES
+
 	}
 }
 
 // called when the mouse moves.
 void game_mouse_movement_input(double x, double y, double delta_x, double delta_y)
 {
-	camera_rotate(&camera, 0.001*delta_y, 0.001*delta_x);
+	camera_rotate(&camera, 0.001*delta_y, -0.001*delta_x);
 }
